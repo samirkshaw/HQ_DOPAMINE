@@ -1,25 +1,122 @@
-// src/App.jsx — temporary, just for testing
-// src/App.jsx
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Home from "./pages/Home";
-import Log from "./pages/Log";
+import React from 'react';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  Outlet,
+} from 'react-router-dom';
 
-// TODO (teammate 2): wrap <Log /> and <Home /> in an auth check once
-// signup/login is built — redirect to a /login route if there's no
-// active Supabase session. For now both routes are open so Samir can
-// keep testing without being blocked on auth UI.
+import { AuthProvider } from './context/AuthContext';
 
-function App() {
+import ProtectedRoute from './components/ProtectedRoute';
+import Navbar from './components/Navbar';
+
+import Auth from './pages/Auth';
+import Home from './pages/Home';
+import Log from './pages/Log';
+import TestPipeline from './pages/TestPipeline';
+
+import Dashboard from './components/Dashboard';
+import UploadPhoto from './components/UploadPhoto';
+
+/*
+=========================================================
+PROTECTED LAYOUT
+=========================================================
+
+Everything inside ProtectedRoute will be authenticated.
+
+Navbar is displayed on every protected page.
+Outlet renders the currently selected protected page.
+*/
+
+function ProtectedLayout() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/log" element={<Log />} />
-        {/* Fallback: unknown paths redirect to Home rather than showing a blank page */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
+    <>
+      <Navbar />
+
+      <Outlet />
+    </>
   );
 }
 
-export default App;
+/*
+=========================================================
+APP
+=========================================================
+*/
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+
+          {/* =================================================
+              PUBLIC ROUTES
+          ================================================= */}
+
+          <Route
+            path="/auth"
+            element={<Auth />}
+          />
+
+
+          {/* =================================================
+              PROTECTED ROUTES
+          ================================================= */}
+
+          <Route element={<ProtectedRoute />}>
+
+            <Route element={<ProtectedLayout />}>
+
+              {/* Home */}
+              <Route
+                path="/"
+                element={<Home />}
+              />
+
+              {/* Dashboard */}
+              <Route
+                path="/dashboard"
+                element={<Dashboard />}
+              />
+
+              {/* Manual Food Log */}
+              <Route
+                path="/log"
+                element={<Log />}
+              />
+
+              {/* AI Food Photo */}
+              <Route
+                path="/upload"
+                element={<UploadPhoto />}
+              />
+
+              {/* Gemini Pipeline Test */}
+              <Route
+                path="/test"
+                element={<TestPipeline />}
+              />
+
+            </Route>
+
+          </Route>
+
+
+          {/* =================================================
+              UNKNOWN URL
+          ================================================= */}
+
+          <Route
+            path="*"
+            element={<Navigate to="/auth" replace />}
+          />
+
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
+  );
+}
