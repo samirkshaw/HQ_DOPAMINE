@@ -1,127 +1,289 @@
 // src/components/ClarificationFlow.jsx
-// Second half of the core loop: shows clarification questions for
-// flagged items, collects answers or "estimate for me," and resolves
-// them via analyzeFoodWithClarification.
 
-import { useState, useEffect } from "react";
-import { analyzeFoodWithClarification, MAX_CLARIFICATION_ROUNDS } from "../lib/gemini";
+import { useState } from "react";
 
-/**
- * @param {File} imageFile - the original photo, needed for every follow-up call
- * @param {Array} initialItems - the items array from analyzeFood()
- * @param {(finalItems: Array) => void} onComplete - called once every item
- *   is resolved (either confirmed, answered, or estimated)
- */
-export default function ClarificationFlow({ imageFile, initialItems, onComplete }) {
-  const [items, setItems] = useState(initialItems);
-  const [draftAnswers, setDraftAnswers] = useState({}); // itemName -> typed text
+import {
+  analyzeFoodWithClarification,
+  MAX_CLARIFICATION_ROUNDS,
+} from "../lib/gemini";
+
+export default function ClarificationFlow({
+  imageFile,
+  initialItems,
+  onComplete,
+}) {
+  const [items, setItems] = useState(initialItems || []);
+  const [draftAnswers, setDraftAnswers] = useState({});
   const [round, setRound] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState("");
 
-  const flaggedItems = items.filter((i) => i.needsClarification);
+  /*
+   * Only items that still need clarification are shown.
+   */
+  const flaggedItems = items.filter(
+    (item) => item.needsClarification
+  );
 
-  // "Estimate for me" — don't call the API again. The model already gave
-  // a best-guess portion/nutrient set when it flagged the item; accepting
-  // that guess as final is exactly the honest-about-precision behavior
-  // the product is built around. Mark it estimated, not confirmed.
+  /*
+   * Update the answer for a specific food item.
+   */
+  function handleDraftChange(itemName, value) {
+    setDraftAnswers((previous) => ({
+      ...previous,
+      [itemName]: value,
+    }));
+  }
+
+  /*
+   * Let the user accept an automatic estimate.
+   *
+   * IMPORTANT:
+   * If this was the final item requiring clarification,
+   * immediately send the finalized items back to UploadPhoto.
+   */
   function handleEstimateForMe(itemName) {
-    setItems((prev) =>
-      prev.map((item) =>
-        item.name === itemName
-          ? { ...item, needsClarification: false, is_estimated: true }
-          : item
-      )
+    const updatedItems = items.map((item) =>
+      item.name === itemName
+        ? {
+            ...item,
+            needsClarification: false,
+            question: null,
+            is_estimated: true,
+          }
+        : item
     );
+
+    setItems(updatedItems);
+
+    const stillNeedsClarification = updatedItems.some(
+      (item) => item.needsClarification
+    );
+
+    if (!stillNeedsClarification) {
+      onComplete?.(updatedItems);
+    }
   }
 
-  function handleDraftChange(itemName, text) {
-    setDraftAnswers((prev) => ({ ...prev, [itemName]: text }));
-  }
-
+  /*
+   * Submit the user's answers to Gemini.
+   */
   async function handleSubmitAnswers() {
     const clarifications = Object.entries(draftAnswers)
-      .filter(([, answer]) => answer.trim().length > 0)
+      .filter(
+        ([, answer]) =>
+          answer && answer.trim().length > 0
+      )
       .map(([itemName, answer]) => {
-        const item = items.find((i) => i.name === itemName);
-        return { itemName, question: item.question, answer };
+        const item = items.find(
+          (current) => current.name === itemName
+        );
+
+        return {
+          itemName,
+          question: item?.question || "",
+          answer: answer.trim(),
+        };
       });
 
-    if (clarifications.length === 0) return;
+    /*
+     * Don't call Gemini if the user hasn't answered
+     * any clarification questions.
+     */
+    if (clarifications.length === 0) {
+      setError(
+        "Please answer at least one clarification question."
+      );
+      return;
+    }
 
     setLoading(true);
-    setError(null);
+    setError("");
 
     try {
-      const result = await analyzeFoodWithClarification(imageFile, clarifications, items);
+      const result =
+        await analyzeFoodWithClarification(
+          imageFile,
+          clarifications,
+          items
+        );
+
+      /*
+       * Make sure Gemini returned the expected structure.
+       */
+      if (
+        !result ||
+        !Array.isArray(result.items) ||
+        result.items.length === 0
+      ) {
+        throw new Error(
+          "The AI returned an invalid food estimate."
+        );
+      }
+
       const nextRound = round + 1;
+
       setRound(nextRound);
 
-      // Force-resolve anything still flagged once we hit the round cap —
-      // don't let a vague answer loop the UI forever.
-      const finalized = result.items.map((item) =>
-        item.needsClarification && nextRound >= MAX_CLARIFICATION_ROUNDS
-          ? { ...item, needsClarification: false, is_estimated: true }
-          : { ...item, is_estimated: item.is_estimated ?? false }
+      /*
+       * After the maximum number of clarification rounds,
+       * anything still uncertain becomes an estimate.
+       */
+      const finalizedItems = result.items.map(
+        (item) => {
+          if (
+            item.needsClarification &&
+            nextRound >= MAX_CLARIFICATION_ROUNDS
+          ) {
+            return {
+              ...item,
+              needsClarification: false,
+              question: null,
+              is_estimated: true,
+            };
+          }
+
+          return {
+            ...item,
+            is_estimated:
+              item.is_estimated ?? false,
+          };
+        }
       );
 
-      setItems(finalized);
+      setItems(finalizedItems);
       setDraftAnswers({});
 
-      const stillFlagged = finalized.some((i) => i.needsClarification);
-      if (!stillFlagged) onComplete(finalized);
-    } catch (err) {
-      setError(err.message);
+      /*
+       * Check whether anything still needs clarification.
+       */
+      const stillNeedsClarification =
+        finalizedItems.some(
+          (item) => item.needsClarification
+        );
+
+      /*
+       * Everything is now finalized.
+       * Send the final nutrition values back to UploadPhoto.
+       */
+      if (!stillNeedsClarification) {
+        onComplete?.(finalizedItems);
+      }
+    } catch (error) {
+      console.error(
+        "ClarificationFlow error:",
+        error
+      );
+
+      setError(
+        error?.message ||
+          "Unable to update the food estimates. Please try again."
+      );
     } finally {
       setLoading(false);
     }
   }
 
-  // Nothing left to ask — hand off immediately (covers the estimate-for-me-only path)
+  /*
+   * If there are no foods requiring clarification,
+   * there is nothing for this component to render.
+   */
   if (flaggedItems.length === 0) {
-    const allResolved = items.every((i) => !i.needsClarification);
-    if (allResolved) onComplete(items);
     return null;
   }
 
+  /*
+   * Check whether at least one answer has been entered.
+   */
+  const hasAnswer = Object.values(
+    draftAnswers
+  ).some(
+    (value) =>
+      typeof value === "string" &&
+      value.trim().length > 0
+  );
+
   return (
-    <div className="space-y-4 p-4 rounded-lg border border-neutral-700 bg-neutral-900">
-      <h3 className="text-sm font-medium text-neutral-300">
-        A few things I couldn't tell from the photo ({flaggedItems.length}
-        {round > 0 ? ` — round ${round + 1} of ${MAX_CLARIFICATION_ROUNDS}` : ""})
-      </h3>
+    <div className="clarification-flow">
+      <div className="clarification-header">
+        <h3>
+          A few things I couldn't tell from the photo
+        </h3>
 
-      {flaggedItems.map((item) => (
-        <div key={item.name} className="space-y-1.5">
-          <p className="text-sm text-neutral-200">
-            <span className="font-medium">{item.name}:</span> {item.question}
+        <p>
+          {flaggedItems.length} item
+          {flaggedItems.length === 1 ? "" : "s"} need
+          {flaggedItems.length === 1 ? "s" : ""} clarification.
+        </p>
+
+        {round > 0 && (
+          <p>
+            Round {round + 1} of{" "}
+            {MAX_CLARIFICATION_ROUNDS}
           </p>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={draftAnswers[item.name] || ""}
-              onChange={(e) => handleDraftChange(item.name, e.target.value)}
-              placeholder="Type your answer..."
-              className="flex-1 rounded-md bg-neutral-800 border border-neutral-600 px-3 py-1.5 text-sm text-neutral-100"
-            />
-            <button
-              onClick={() => handleEstimateForMe(item.name)}
-              className="text-xs px-3 py-1.5 rounded-md border border-neutral-600 text-neutral-300 hover:bg-neutral-800"
-            >
-              Not sure / Estimate for me
-            </button>
-          </div>
-        </div>
-      ))}
+        )}
+      </div>
 
-      {error && <p className="text-sm text-red-400">{error}</p>}
+      <div className="clarification-items">
+        {flaggedItems.map((item, index) => (
+          <div
+            key={`${item.name}-${index}`}
+            className="clarification-item"
+          >
+            <div className="clarification-question">
+              <strong>{item.name}</strong>
+
+              <span>
+                {item.question ||
+                  "What was the approximate portion size?"}
+              </span>
+            </div>
+
+            <div className="clarification-actions">
+              <input
+                type="text"
+                value={
+                  draftAnswers[item.name] || ""
+                }
+                onChange={(event) =>
+                  handleDraftChange(
+                    item.name,
+                    event.target.value
+                  )
+                }
+                placeholder="Type your answer..."
+                disabled={loading}
+              />
+
+              <button
+                type="button"
+                onClick={() =>
+                  handleEstimateForMe(item.name)
+                }
+                disabled={loading}
+              >
+                Estimate for me
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {error && (
+        <div className="clarification-error">
+          {error}
+        </div>
+      )}
 
       <button
+        type="button"
         onClick={handleSubmitAnswers}
-        disabled={loading || Object.values(draftAnswers).every((v) => !v?.trim())}
-        className="text-sm px-4 py-2 rounded-md bg-blue-600 text-white disabled:opacity-40"
+        disabled={loading || !hasAnswer}
+        className="clarification-submit"
       >
-        {loading ? "Updating..." : "Submit answers"}
+        {loading
+          ? "Updating..."
+          : "Submit answers"}
       </button>
     </div>
   );
