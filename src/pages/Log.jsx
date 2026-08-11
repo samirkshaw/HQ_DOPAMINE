@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthContext";
 import UploadPhoto from "../components/UploadPhoto";
+import MealLogCard from "../components/MealLogCard";
 
 const styles = `
   .hq-log-page {
@@ -483,6 +484,8 @@ export default function Log() {
     setLoading(true);
 
     try {
+      const mealGroupId = crypto.randomUUID();
+
       const rows = items.map((item) => ({
         user_id: user.id,
 
@@ -500,6 +503,8 @@ export default function Log() {
         log_date: getLocalDate(),
 
         is_ai_generated: isAI,
+
+        meal_group_id: mealGroupId,
       }));
 
       /*
@@ -630,6 +635,8 @@ export default function Log() {
     setLoading(true);
 
     try {
+      const mealGroupId = crypto.randomUUID();
+
       const foodData = {
         user_id: user.id,
 
@@ -646,6 +653,8 @@ export default function Log() {
         log_date: getLocalDate(),
 
         is_ai_generated: false,
+
+        meal_group_id: mealGroupId,
       };
 
       console.log(
@@ -967,96 +976,33 @@ export default function Log() {
               </div>
 
             ) : (
+              <div className="hq-food-list" style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                {(() => {
+                  const map = new Map();
+                  for (const item of foods) {
+                    let key = item.meal_group_id;
+                    if (!key && item.created_at) {
+                      key = `batch-${String(item.created_at).slice(0, 16)}`;
+                    }
+                    if (!key) {
+                      key = `single-${item.id || Math.random()}`;
+                    }
 
-              <div className="hq-food-list">
+                    if (!map.has(key)) {
+                      map.set(key, []);
+                    }
+                    map.get(key).push(item);
+                  }
+                  const groupedMeals = Array.from(map.values());
 
-                {foods.map((food) => (
-
-                  <article
-                    className="hq-food-item"
-                    key={food.id}
-                  >
-
-                    <div className="hq-food-top">
-
-                      <div>
-
-                        <h3 className="hq-food-name">
-                          {food.food_name}
-                        </h3>
-
-                        {food.created_at && (
-                          <div className="hq-food-date">
-                            {new Date(
-                              food.created_at
-                            ).toLocaleString()}
-                          </div>
-                        )}
-
-                      </div>
-
-                      <div className="hq-food-calories">
-                        {Number(food.calories || 0).toFixed(0)}{" "}
-                        kcal
-                      </div>
-
-                    </div>
-
-                    <div className="hq-nutrition-row">
-
-                      <div className="hq-nutrition-item">
-
-                        <span className="hq-nutrition-value">
-                          {Number(
-                            food.protein || 0
-                          ).toFixed(1)}
-                          g
-                        </span>
-
-                        <span className="hq-nutrition-label">
-                          Protein
-                        </span>
-
-                      </div>
-
-                      <div className="hq-nutrition-item">
-
-                        <span className="hq-nutrition-value">
-                          {Number(
-                            food.carbs || 0
-                          ).toFixed(1)}
-                          g
-                        </span>
-
-                        <span className="hq-nutrition-label">
-                          Carbs
-                        </span>
-
-                      </div>
-
-                      <div className="hq-nutrition-item">
-
-                        <span className="hq-nutrition-value">
-                          {Number(
-                            food.fat || 0
-                          ).toFixed(1)}
-                          g
-                        </span>
-
-                        <span className="hq-nutrition-label">
-                          Fat
-                        </span>
-
-                      </div>
-
-                    </div>
-
-                  </article>
-
-                ))}
-
+                  return groupedMeals.map((mealItems, idx) => (
+                    <MealLogCard
+                      key={mealItems[0].meal_group_id || mealItems[0].id || idx}
+                      items={mealItems}
+                    />
+                  ));
+                })()}
               </div>
-
             )}
 
           </section>

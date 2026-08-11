@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
+import { analyzeDailyTargets } from '../lib/gemini';
 
 const styles = `
   .hq-profile {
@@ -311,11 +312,56 @@ export default function Profile() {
         return;
       }
 
-      setSuccess('Profile saved successfully.');
+      setSuccess('Profile saved successfully!');
 
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 700);
+      // Check if user has an active daily target
+      const { data: existingTarget } = await supabase
+        .from('daily_targets')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('active', true)
+        .maybeSingle();
+
+      // If first time save (no active daily target), auto-generate targets
+      if (!existingTarget) {
+        try {
+          const targets = await analyzeDailyTargets({
+            age: profileData.age,
+            weight_kg: profileData.weight_kg,
+            height_cm: profileData.height_cm,
+            activity_level: profileData.activity_level,
+            goal: profileData.goal,
+            health_conditions: profileData.health_conditions || 'none reported',
+          });
+
+          if (targets && typeof targets.calories === 'number') {
+            await supabase
+              .from('daily_targets')
+              .update({ active: false })
+              .eq('user_id', user.id)
+              .eq('active', true);
+
+            await supabase
+              .from('daily_targets')
+              .insert({
+                user_id: user.id,
+                calories: targets.calories,
+                protein_g: targets.protein_g,
+                carbs_g: targets.carbs_g,
+                fat_g: targets.fat_g,
+                fiber_g: targets.fiber_g,
+                iron_mg: targets.iron_mg,
+                calcium_mg: targets.calcium_mg,
+                active: true,
+                generated_at: new Date().toISOString(),
+              });
+          }
+        } catch (targetErr) {
+          console.warn('Auto target calculation notice:', targetErr);
+        }
+      }
+
+      navigate('/dashboard');
     } catch (err) {
       console.error('Unexpected profile save error:', err);
       setError('Unable to save your profile.');

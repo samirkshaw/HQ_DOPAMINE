@@ -5,6 +5,56 @@ import {
   analyzeDailyTargets,
   analyzeEndOfDayGuidance,
 } from "../lib/gemini";
+import MealLogCard from "./MealLogCard";
+
+function getLocalDateStr(offsetDays = 0) {
+  const now = new Date();
+  now.setDate(now.getDate() - offsetDays);
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function formatDateLabel(dateStr) {
+  const today = getLocalDateStr(0);
+  const yesterday = getLocalDateStr(1);
+
+  const [year, month, day] = dateStr.split("-").map(Number);
+  const d = new Date(year, month - 1, day);
+  const monthName = d.toLocaleDateString("en-US", { month: "short" });
+  const dayNum = d.getDate();
+  const dayOfWeek = d.toLocaleDateString("en-US", { weekday: "short" });
+
+  if (dateStr === today) {
+    return `Today (${monthName} ${dayNum})`;
+  }
+  if (dateStr === yesterday) {
+    return `Yesterday (${monthName} ${dayNum})`;
+  }
+  return `${dayOfWeek}, ${monthName} ${dayNum}`;
+}
+
+function groupFoodsByMeal(foodList) {
+  if (!Array.isArray(foodList) || foodList.length === 0) return [];
+  const map = new Map();
+  for (const item of foodList) {
+    let key = item.meal_group_id;
+    if (!key && item.created_at) {
+      key = `batch-${String(item.created_at).slice(0, 16)}`;
+    }
+    if (!key) {
+      key = `single-${item.id || Math.random()}`;
+    }
+
+    if (!map.has(key)) {
+      map.set(key, []);
+    }
+    map.get(key).push(item);
+  }
+  return Array.from(map.values());
+}
+
 
 const styles = `
   .hq-dashboard {
@@ -527,6 +577,8 @@ export default function Dashboard() {
   const { user } = useAuth();
 
   const [foods, setFoods] = useState([]);
+  const [historyFoods, setHistoryFoods] = useState([]);
+  const [expandedDates, setExpandedDates] = useState({});
   const [targets, setTargets] = useState(null);
 
   const [loading, setLoading] = useState(true);
@@ -545,6 +597,7 @@ export default function Dashboard() {
   useEffect(() => {
     if (!user) {
       setFoods([]);
+      setHistoryFoods([]);
       setTargets(null);
       setLoading(false);
       setTargetsLoading(false);
@@ -563,7 +616,7 @@ export default function Dashboard() {
     setTargetSuccess("");
 
     await Promise.all([
-      loadTodayFoods(),
+      loadRecentFoods(),
       loadSavedTargets(),
     ]);
 
@@ -573,26 +626,24 @@ export default function Dashboard() {
 
   /*
   =========================================================
-  LOAD TODAY'S FOOD
+  LOAD RECENT 7-DAY FOOD LOGS
   =========================================================
   */
 
-  async function loadTodayFoods() {
+  async function loadRecentFoods() {
     if (!user) return;
 
     try {
-      const today = new Date()
-        .toISOString()
-        .slice(0, 10);
+      const today = getLocalDateStr(0);
+      const sevenDaysAgo = getLocalDateStr(6);
 
       const { data, error } = await supabase
         .from("food_logs")
         .select("*")
         .eq("user_id", user.id)
-        .eq("log_date", today)
-        .order("created_at", {
-          ascending: false,
-        });
+        .gte("log_date", sevenDaysAgo)
+        .order("log_date", { ascending: false })
+        .order("created_at", { ascending: false });
 
       if (error) {
         console.error(
@@ -602,10 +653,18 @@ export default function Dashboard() {
 
         setError(error.message);
         setFoods([]);
+        setHistoryFoods([]);
         return;
       }
 
-      setFoods(data || []);
+      const allItems = data || [];
+      setHistoryFoods(allItems);
+
+      // Filter for today's food
+      const todaysList = allItems.filter(
+        (item) => item.log_date === today
+      );
+      setFoods(todaysList);
     } catch (err) {
       console.error(
         "Unexpected food loading error:",
@@ -613,12 +672,21 @@ export default function Dashboard() {
       );
 
       setError(
-        "Unable to load today's food."
+        "Unable to load food records."
       );
 
       setFoods([]);
+      setHistoryFoods([]);
     }
   }
+
+  const toggleDateExpanded = (dateStr) => {
+    setExpandedDates((prev) => ({
+      ...prev,
+      [dateStr]: !prev[dateStr],
+    }));
+  };
+
 
   /*
   =========================================================
@@ -1406,7 +1474,7 @@ export default function Dashboard() {
           </section>
 
           {/* =================================================
-              TODAY'S FOOD
+              TODAY'S MEALS
           ================================================= */}
 
           <section className="hq-section">
@@ -1414,7 +1482,7 @@ export default function Dashboard() {
             <div className="hq-section-header">
 
               <h2 className="hq-section-title">
-                Today's Food
+                Today's Meals
               </h2>
 
               <div>
@@ -1452,105 +1520,13 @@ export default function Dashboard() {
                 No food logged today yet.
               </div>
             ) : (
-              <div className="hq-food-list">
-
-                {foods.map((food) => (
-
-                  <article
-                    className="hq-food-card"
-                    key={food.id}
-                  >
-
-                    <div className="hq-food-top">
-
-                      <div>
-
-                        <h3 className="hq-food-name">
-                          {food.food_name}
-                        </h3>
-
-                        {(food.created_at ||
-                          food.logged_at) && (
-                          <div className="hq-food-date">
-                            {new Date(
-                              food.created_at ||
-                                food.logged_at
-                            ).toLocaleString()}
-                          </div>
-                        )}
-
-                      </div>
-
-                      <div className="hq-food-calories">
-                        {getFoodValue(
-                          food,
-                          "calories",
-                          "calories"
-                        )}{" "}
-                        kcal
-                      </div>
-
-                    </div>
-
-                    <div className="hq-food-nutrition">
-
-                      <div className="hq-food-nutrition-item">
-
-                        <span className="hq-food-nutrition-value">
-                          {getFoodValue(
-                            food,
-                            "protein",
-                            "protein_g"
-                          ).toFixed(1)}
-                          g
-                        </span>
-
-                        <span className="hq-food-nutrition-label">
-                          Protein
-                        </span>
-
-                      </div>
-
-                      <div className="hq-food-nutrition-item">
-
-                        <span className="hq-food-nutrition-value">
-                          {getFoodValue(
-                            food,
-                            "carbs",
-                            "carbs_g"
-                          ).toFixed(1)}
-                          g
-                        </span>
-
-                        <span className="hq-food-nutrition-label">
-                          Carbs
-                        </span>
-
-                      </div>
-
-                      <div className="hq-food-nutrition-item">
-
-                        <span className="hq-food-nutrition-value">
-                          {getFoodValue(
-                            food,
-                            "fat",
-                            "fat_g"
-                          ).toFixed(1)}
-                          g
-                        </span>
-
-                        <span className="hq-food-nutrition-label">
-                          Fat
-                        </span>
-
-                      </div>
-
-                    </div>
-
-                  </article>
-
+              <div className="hq-food-list" style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                {groupFoodsByMeal(foods).map((mealItems, idx) => (
+                  <MealLogCard
+                    key={mealItems[0].meal_group_id || mealItems[0].id || idx}
+                    items={mealItems}
+                  />
                 ))}
-
               </div>
             )}
 
@@ -1560,4 +1536,4 @@ export default function Dashboard() {
       </main>
     </>
   );
-}
+}

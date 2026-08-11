@@ -14,18 +14,18 @@ import Navbar from './components/Navbar';
 
 import Landing from './pages/Landing';
 import Auth from './pages/Auth';
-import Home from './pages/Home';
+import Profile from './pages/Profile';
 import Log from './pages/Log';
+import History from './pages/History';
 import TestPipeline from './pages/TestPipeline';
 
 import Dashboard from './components/Dashboard';
-import UploadPhoto from './components/UploadPhoto';
 
 /*
 =========================================================
-INDEX ROUTE (LANDING VS HOME)
+ROOT INDEX ROUTE
 Unauthenticated -> Landing Page
-Authenticated -> Navbar + Home Page
+Authenticated -> Redirect to /dashboard
 =========================================================
 */
 function RootIndex() {
@@ -54,17 +54,13 @@ function RootIndex() {
     return <Landing />;
   }
 
-  return (
-    <>
-      <Navbar />
-      <Home />
-    </>
-  );
+  return <Navigate to="/dashboard" replace />;
 }
 
 /*
 =========================================================
 PROTECTED LAYOUT
+Displays Navbar on top for all authenticated pages
 =========================================================
 */
 function ProtectedLayout() {
@@ -78,7 +74,7 @@ function ProtectedLayout() {
 
 /*
 =========================================================
-APP
+APP ROUTER
 =========================================================
 */
 export default function App() {
@@ -88,7 +84,7 @@ export default function App() {
         <Routes>
 
           {/* =================================================
-              ROOT INDEX (LANDING PAGE OR HOME)
+              PUBLIC LANDING / REDIRECT
           ================================================= */}
           <Route path="/" element={<RootIndex />} />
 
@@ -102,9 +98,19 @@ export default function App() {
           ================================================= */}
           <Route element={<ProtectedRoute />}>
             <Route element={<ProtectedLayout />}>
+              {/* Dashboard is the primary home for authenticated users */}
               <Route path="/dashboard" element={<Dashboard />} />
+
+              {/* Single food logging page */}
               <Route path="/log" element={<Log />} />
-              <Route path="/upload" element={<UploadPhoto />} />
+
+              {/* History & Calendar page */}
+              <Route path="/history" element={<History />} />
+
+              {/* Profile editing form */}
+              <Route path="/profile" element={<Profile />} />
+
+              {/* Gemini Pipeline Test (Development route) */}
               <Route path="/test" element={<TestPipeline />} />
             </Route>
           </Route>

@@ -17,22 +17,12 @@ export default function Navbar() {
   return (
     <nav style={styles.navbar}>
       <div style={styles.leftSection}>
-        <Link to="/" style={styles.brandLink}>
+        <Link to="/dashboard" style={styles.brandLink}>
           <span style={styles.brandBadge}>HQ</span>
           <span style={styles.brandName}>DOPAMINE</span>
         </Link>
 
         <div style={styles.navLinksGroup}>
-          <Link
-            to="/"
-            style={{
-              ...styles.navLink,
-              ...(isActive("/") ? styles.activeNavLink : {}),
-            }}
-          >
-            Home
-          </Link>
-
           <Link
             to="/dashboard"
             style={{
@@ -44,16 +34,6 @@ export default function Navbar() {
           </Link>
 
           <Link
-            to="/upload"
-            style={{
-              ...styles.navLink,
-              ...(isActive("/upload") ? styles.activeNavLink : {}),
-            }}
-          >
-            Scan Plate
-          </Link>
-
-          <Link
             to="/log"
             style={{
               ...styles.navLink,
@@ -61,6 +41,26 @@ export default function Navbar() {
             }}
           >
             Log Food
+          </Link>
+
+          <Link
+            to="/history"
+            style={{
+              ...styles.navLink,
+              ...(isActive("/history") ? styles.activeNavLink : {}),
+            }}
+          >
+            History
+          </Link>
+
+          <Link
+            to="/profile"
+            style={{
+              ...styles.navLink,
+              ...(isActive("/profile") ? styles.activeNavLink : {}),
+            }}
+          >
+            Profile
           </Link>
         </div>
       </div>
