@@ -1,29 +1,33 @@
-import React, { useState } from 'react';
-import { useNavigate, Navigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Navigate, useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function Auth() {
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [searchParams] = useSearchParams();
+  const initialMode = searchParams.get('mode') === 'signup';
+  
+  const [isSignUp, setIsSignUp] = useState(initialMode);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Added 'loading' destructuring here
   const { user, loading, signIn, signUp } = useAuth();
   const navigate = useNavigate();
 
-  // 1. Wait for Supabase to finish checking the session
+  useEffect(() => {
+    setIsSignUp(searchParams.get('mode') === 'signup');
+  }, [searchParams]);
+
   if (loading) {
     return (
       <div style={styles.container}>
-        <div style={{ color: '#94a3b8', fontSize: '16px' }}>Initializing...</div>
+        <div style={{ color: '#5B6B65', fontSize: '15px' }}>Initializing authentication...</div>
       </div>
     );
   }
 
-  // 2. If already logged in, redirect immediately
   if (user) {
     return <Navigate replace to="/" />;
   }
@@ -68,31 +72,68 @@ export default function Auth() {
     }
   };
 
-  const toggleMode = () => {
-    setIsSignUp(!isSignUp);
+  const toggleMode = (signupState) => {
+    setIsSignUp(signupState);
     setError('');
     setMessage('');
   };
 
   return (
     <div style={styles.container}>
-      <div style={styles.card}>
-        <h1 style={styles.title}>HQ DOPAMINE</h1>
-        <h2 style={styles.subtitle}>{isSignUp ? 'Create an Account' : 'Welcome Back'}</h2>
+      <div style={styles.headerNav}>
+        <Link to="/" style={styles.brandLink}>
+          <span style={styles.brandBadge}>HQ</span>
+          <span style={styles.brandName}>DOPAMINE</span>
+        </Link>
+      </div>
+
+      <div className="glass-card" style={styles.card}>
+        <h1 style={styles.title}>
+          {isSignUp ? 'Create your Account' : 'Welcome Back'}
+        </h1>
+        <p style={styles.subtitle}>
+          {isSignUp
+            ? 'Start tracking your meals with honest AI insight.'
+            : 'Sign in to access your daily targets and meal logs.'}
+        </p>
+
+        {/* Mode Switch Tabs */}
+        <div style={styles.tabGroup}>
+          <button
+            type="button"
+            onClick={() => toggleMode(false)}
+            style={{
+              ...styles.tabBtn,
+              ...(!isSignUp ? styles.tabBtnActive : {}),
+            }}
+          >
+            Sign In
+          </button>
+          <button
+            type="button"
+            onClick={() => toggleMode(true)}
+            style={{
+              ...styles.tabBtn,
+              ...(isSignUp ? styles.tabBtnActive : {}),
+            }}
+          >
+            Sign Up
+          </button>
+        </div>
 
         {error && <div style={styles.errorMessage}>{error}</div>}
         {message && <div style={styles.successMessage}>{message}</div>}
 
         <form onSubmit={handleSubmit} style={styles.form}>
           <div style={styles.inputGroup}>
-            <label style={styles.label}>Email</label>
+            <label style={styles.label}>Email Address</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
               required
-              style={styles.input}
+              className="glass-input"
             />
           </div>
 
@@ -104,7 +145,7 @@ export default function Auth() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               required
-              style={styles.input}
+              className="glass-input"
             />
           </div>
 
@@ -119,7 +160,7 @@ export default function Auth() {
           >
             {isSubmitting
               ? (isSignUp ? 'Creating account...' : 'Signing in...')
-              : (isSignUp ? 'Sign Up' : 'Sign In')}
+              : (isSignUp ? 'Create Account →' : 'Sign In →')}
           </button>
         </form>
 
@@ -129,10 +170,10 @@ export default function Auth() {
             {' '}
             <button
               type="button"
-              onClick={toggleMode}
+              onClick={() => toggleMode(!isSignUp)}
               style={styles.toggleButton}
             >
-              {isSignUp ? 'Sign In' : 'Sign Up'}
+              {isSignUp ? 'Sign In' : 'Sign Up free'}
             </button>
           </p>
         </div>
@@ -141,20 +182,148 @@ export default function Auth() {
   );
 }
 
-// ... Keep your existing styles object here ...
 const styles = {
-  container: { minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', backgroundColor: '#0f172a', color: '#f8fafc', fontFamily: 'system-ui, -apple-system, sans-serif' },
-  card: { width: '100%', maxWidth: '400px', padding: '32px', borderRadius: '12px', backgroundColor: '#1e293b', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5)', border: '1px solid #334155' },
-  title: { margin: '0 0 8px 0', fontSize: '24px', fontWeight: '800', textAlign: 'center', letterSpacing: '1px', color: '#38bdf8' },
-  subtitle: { margin: '0 0 24px 0', fontSize: '18px', fontWeight: '500', textAlign: 'center', color: '#94a3b8' },
-  form: { display: 'flex', flexDirection: 'column', gap: '16px' },
-  inputGroup: { display: 'flex', flexDirection: 'column', gap: '6px' },
-  label: { fontSize: '14px', fontWeight: '500', color: '#cbd5e1' },
-  input: { padding: '10px 14px', borderRadius: '6px', border: '1px solid #475569', backgroundColor: '#0f172a', color: '#f8fafc', fontSize: '15px', outline: 'none' },
-  button: { marginTop: '8px', padding: '12px', borderRadius: '6px', border: 'none', backgroundColor: '#0284c7', color: '#ffffff', fontSize: '16px', fontWeight: '600' },
-  errorMessage: { padding: '10px 12px', marginBottom: '16px', borderRadius: '6px', backgroundColor: '#7f1d1d', border: '1px solid #991b1b', color: '#fca5a5', fontSize: '14px' },
-  successMessage: { padding: '10px 12px', marginBottom: '16px', borderRadius: '6px', backgroundColor: '#14532d', border: '1px solid #166534', color: '#86efac', fontSize: '14px' },
-  footer: { marginTop: '20px', textAlign: 'center' },
-  footerText: { margin: 0, fontSize: '14px', color: '#94a3b8' },
-  toggleButton: { background: 'none', border: 'none', color: '#38bdf8', fontWeight: '600', cursor: 'pointer', padding: '0 4px', fontSize: '14px', textDecoration: 'underline' }
+  container: {
+    minHeight: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '24px',
+    position: 'relative',
+  },
+  headerNav: {
+    position: 'absolute',
+    top: '24px',
+    left: '24px',
+  },
+  brandLink: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    textDecoration: 'none',
+  },
+  brandBadge: {
+    backgroundColor: '#1F9E76',
+    color: '#ffffff',
+    fontWeight: '800',
+    fontSize: '12px',
+    padding: '3px 7px',
+    borderRadius: '6px',
+  },
+  brandName: {
+    fontFamily: "var(--font-display)",
+    fontSize: '19px',
+    fontWeight: '700',
+    color: '#10241E',
+  },
+  card: {
+    width: '100%',
+    maxWidth: '420px',
+    padding: '36px 28px',
+    border: '1px solid rgba(255, 255, 255, 0.9)',
+  },
+  title: {
+    margin: '0 0 6px 0',
+    fontFamily: "var(--font-display)",
+    fontSize: '28px',
+    fontWeight: '700',
+    textAlign: 'center',
+    color: '#10241E',
+  },
+  subtitle: {
+    margin: '0 0 24px 0',
+    fontSize: '14px',
+    textAlign: 'center',
+    color: '#5B6B65',
+    lineHeight: '1.5',
+  },
+  tabGroup: {
+    display: 'flex',
+    backgroundColor: 'rgba(16, 36, 30, 0.06)',
+    padding: '4px',
+    borderRadius: '12px',
+    marginBottom: '24px',
+  },
+  tabBtn: {
+    flex: 1,
+    padding: '8px 12px',
+    border: 'none',
+    borderRadius: '8px',
+    backgroundColor: 'transparent',
+    color: '#5B6B65',
+    fontSize: '14px',
+    fontWeight: '600',
+    cursor: 'pointer',
+    transition: 'all 0.2s',
+  },
+  tabBtnActive: {
+    backgroundColor: '#ffffff',
+    color: '#10241E',
+    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.06)',
+  },
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '18px',
+  },
+  inputGroup: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '6px',
+  },
+  label: {
+    fontSize: '13px',
+    fontWeight: '600',
+    color: '#10241E',
+  },
+  button: {
+    marginTop: '6px',
+    padding: '14px',
+    borderRadius: '999px',
+    border: 'none',
+    backgroundColor: '#1F9E76',
+    color: '#ffffff',
+    fontSize: '15px',
+    fontWeight: '600',
+    boxShadow: '0 4px 14px rgba(31, 158, 118, 0.25)',
+    transition: 'all 0.2s ease',
+  },
+  errorMessage: {
+    padding: '12px',
+    marginBottom: '16px',
+    borderRadius: '10px',
+    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+    border: '1px solid rgba(239, 68, 68, 0.25)',
+    color: '#dc2626',
+    fontSize: '13px',
+  },
+  successMessage: {
+    padding: '12px',
+    marginBottom: '16px',
+    borderRadius: '10px',
+    backgroundColor: 'rgba(31, 158, 118, 0.1)',
+    border: '1px solid rgba(31, 158, 118, 0.25)',
+    color: '#1F9E76',
+    fontSize: '13px',
+  },
+  footer: {
+    marginTop: '24px',
+    textAlign: 'center',
+  },
+  footerText: {
+    margin: 0,
+    fontSize: '14px',
+    color: '#5B6B65',
+  },
+  toggleButton: {
+    background: 'none',
+    border: 'none',
+    color: '#1F9E76',
+    fontWeight: '600',
+    cursor: 'pointer',
+    padding: '0 4px',
+    fontSize: '14px',
+    textDecoration: 'underline',
+  },
 };

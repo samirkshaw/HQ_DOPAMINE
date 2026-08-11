@@ -285,6 +285,116 @@ export default function ClarificationFlow({
           ? "Updating..."
           : "Submit answers"}
       </button>
+
+      <style>{`
+        .clarification-flow {
+          margin-top: 20px;
+          padding: 20px;
+          border-radius: 16px;
+          border: 1px solid rgba(255, 143, 107, 0.4);
+          background: rgba(255, 143, 107, 0.12);
+        }
+
+        .clarification-header h3 {
+          margin: 0 0 6px;
+          color: #FF8F6B;
+          font-family: var(--font-display);
+          font-size: 17px;
+          font-weight: 700;
+        }
+
+        .clarification-header p {
+          margin: 0 0 16px;
+          color: #5B6B65;
+          font-size: 13px;
+        }
+
+        .clarification-items {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .clarification-item {
+          padding: 14px;
+          border-radius: 12px;
+          background: rgba(255, 255, 255, 0.85);
+          border: 1px solid rgba(16, 36, 30, 0.08);
+        }
+
+        .clarification-question {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+          margin-bottom: 10px;
+        }
+
+        .clarification-question strong {
+          color: #10241E;
+          font-size: 14px;
+        }
+
+        .clarification-question span {
+          color: #5B6B65;
+          font-size: 13px;
+        }
+
+        .clarification-actions {
+          display: flex;
+          gap: 10px;
+        }
+
+        .clarification-actions input {
+          flex: 1;
+          padding: 8px 12px;
+          border-radius: 8px;
+          border: 1px solid rgba(16, 36, 30, 0.15);
+          background: #ffffff;
+          color: #10241E;
+          font-size: 13px;
+          outline: none;
+        }
+
+        .clarification-actions button {
+          padding: 8px 14px;
+          border-radius: 8px;
+          border: 1px solid rgba(31, 158, 118, 0.3);
+          background: rgba(31, 158, 118, 0.1);
+          color: #1F9E76;
+          font-size: 12px;
+          font-weight: 600;
+          cursor: pointer;
+        }
+
+        .clarification-error {
+          margin-top: 12px;
+          padding: 10px;
+          border-radius: 8px;
+          background: rgba(239, 68, 68, 0.1);
+          border: 1px solid rgba(239, 68, 68, 0.25);
+          color: #dc2626;
+          font-size: 12px;
+        }
+
+        .clarification-submit {
+          width: 100%;
+          margin-top: 14px;
+          padding: 12px;
+          border-radius: 999px;
+          border: none;
+          background: #1F9E76;
+          color: #ffffff;
+          font-size: 14px;
+          font-weight: 600;
+          cursor: pointer;
+          box-shadow: 0 4px 12px rgba(31, 158, 118, 0.25);
+        }
+
+        .clarification-submit:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      `}</style>
     </div>
   );
 }

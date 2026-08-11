@@ -7,11 +7,8 @@ const styles = {
     minHeight: "calc(100vh - 64px)",
     boxSizing: "border-box",
     padding: "50px 20px 80px",
-    background:
-      "radial-gradient(circle at 0% 0%, rgba(102, 31, 255, 0.24), transparent 38%), #09090d",
-    color: "#f5f5f7",
-    fontFamily:
-      "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+    color: "#10241E",
+    fontFamily: "var(--font-body)",
   },
 
   container: {
@@ -22,7 +19,7 @@ const styles = {
 
   eyebrow: {
     marginBottom: "8px",
-    color: "#a78bfa",
+    color: "#1F9E76",
     fontSize: "12px",
     fontWeight: "700",
     letterSpacing: "2px",
@@ -31,40 +28,43 @@ const styles = {
 
   title: {
     margin: 0,
-    color: "#ffffff",
-    fontSize: "36px",
+    color: "#10241E",
+    fontFamily: "var(--font-display)",
+    fontSize: "40px",
     lineHeight: "1.1",
-    fontWeight: "800",
-    letterSpacing: "-1px",
+    fontWeight: "700",
+    letterSpacing: "-0.5px",
   },
 
   subtitle: {
     margin: "10px 0 30px",
-    color: "#8d8da1",
-    fontSize: "14px",
+    color: "#5B6B65",
+    fontSize: "15px",
     lineHeight: "1.6",
   },
 
   card: {
-    padding: "24px",
-    border: "1px solid rgba(255,255,255,0.07)",
-    borderRadius: "16px",
-    background: "rgba(18,18,24,0.88)",
-    boxShadow:
-      "0 18px 40px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.025)",
+    padding: "32px",
+    border: "1px solid rgba(255, 255, 255, 0.9)",
+    borderRadius: "20px",
+    background: "rgba(255, 255, 255, 0.65)",
+    backdropFilter: "blur(16px)",
+    WebkitBackdropFilter: "blur(16px)",
+    boxShadow: "0 14px 36px rgba(16, 36, 30, 0.06)",
   },
 
   sectionTitle: {
-    margin: "0 0 20px",
-    color: "#ffffff",
-    fontSize: "20px",
-    fontWeight: "800",
+    margin: "0 0 24px",
+    color: "#10241E",
+    fontFamily: "var(--font-display)",
+    fontSize: "24px",
+    fontWeight: "700",
   },
 
   form: {
     display: "flex",
     flexDirection: "column",
-    gap: "18px",
+    gap: "20px",
   },
 
   row: {
@@ -80,32 +80,32 @@ const styles = {
   },
 
   label: {
-    color: "#c7c7d4",
-    fontSize: "12px",
-    fontWeight: "700",
+    color: "#10241E",
+    fontSize: "13px",
+    fontWeight: "600",
   },
 
   input: {
     width: "100%",
     boxSizing: "border-box",
-    padding: "12px 13px",
-    border: "1px solid rgba(255,255,255,0.09)",
-    borderRadius: "9px",
+    padding: "12px 14px",
+    border: "1px solid rgba(16, 36, 30, 0.12)",
+    borderRadius: "12px",
     outline: "none",
-    background: "#0f0f15",
-    color: "#ffffff",
+    background: "rgba(255, 255, 255, 0.8)",
+    color: "#10241E",
     fontSize: "14px",
   },
 
   select: {
     width: "100%",
     boxSizing: "border-box",
-    padding: "12px 13px",
-    border: "1px solid rgba(255,255,255,0.09)",
-    borderRadius: "9px",
+    padding: "12px 14px",
+    border: "1px solid rgba(16, 36, 30, 0.12)",
+    borderRadius: "12px",
     outline: "none",
-    background: "#0f0f15",
-    color: "#ffffff",
+    background: "rgba(255, 255, 255, 0.8)",
+    color: "#10241E",
     fontSize: "14px",
   },
 
@@ -114,52 +114,54 @@ const styles = {
     boxSizing: "border-box",
     minHeight: "90px",
     resize: "vertical",
-    padding: "12px 13px",
-    border: "1px solid rgba(255,255,255,0.09)",
-    borderRadius: "9px",
+    padding: "12px 14px",
+    border: "1px solid rgba(16, 36, 30, 0.12)",
+    borderRadius: "12px",
     outline: "none",
-    background: "#0f0f15",
-    color: "#ffffff",
+    background: "rgba(255, 255, 255, 0.8)",
+    color: "#10241E",
     fontSize: "14px",
     fontFamily: "inherit",
   },
 
   hint: {
     marginTop: "4px",
-    color: "#666676",
-    fontSize: "11px",
+    color: "#5B6B65",
+    fontSize: "12px",
     lineHeight: "1.5",
   },
 
   button: {
-    marginTop: "6px",
-    padding: "13px 18px",
+    marginTop: "8px",
+    padding: "14px 24px",
     border: "none",
-    borderRadius: "9px",
-    background: "linear-gradient(90deg, #7c3aed, #8b5cf6)",
+    borderRadius: "999px",
+    background: "#1F9E76",
     color: "#ffffff",
-    fontSize: "14px",
-    fontWeight: "800",
+    fontSize: "15px",
+    fontWeight: "600",
     cursor: "pointer",
+    boxShadow: "0 4px 14px rgba(31, 158, 118, 0.25)",
+    transition: "all 0.2s ease",
   },
 
   message: {
     marginBottom: "18px",
     padding: "12px 14px",
-    borderRadius: "9px",
+    borderRadius: "10px",
     fontSize: "13px",
   },
 
   error: {
-    background: "rgba(248,113,113,0.08)",
-    border: "1px solid rgba(248,113,113,0.18)",
-    color: "#fca5a5",
+    background: "rgba(239, 68, 68, 0.1)",
+    border: "1px solid rgba(239, 68, 68, 0.25)",
+    color: "#dc2626",
   },
 
   success: {
-    background: "rgba(74,222,128,0.08)",
-    border: "1px solid rgba(74,222,128,0.18)",
-    color: "#86efac",
+    background: "rgba(31, 158, 118, 0.1)",
+    border: "1px solid rgba(31, 158, 118, 0.25)",
+    color: "#1F9E76",
   },
 
   loading: {
@@ -167,10 +169,9 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    background: "#09090d",
-    color: "#94a3b8",
-    fontFamily:
-      "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+    color: "#5B6B65",
+    fontFamily: "var(--font-body)",
+    fontSize: "15px",
   },
 };
 

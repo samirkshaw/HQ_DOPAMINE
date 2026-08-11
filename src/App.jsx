@@ -7,11 +7,12 @@ import {
   Outlet,
 } from 'react-router-dom';
 
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
 
+import Landing from './pages/Landing';
 import Auth from './pages/Auth';
 import Home from './pages/Home';
 import Log from './pages/Log';
@@ -22,20 +23,54 @@ import UploadPhoto from './components/UploadPhoto';
 
 /*
 =========================================================
+INDEX ROUTE (LANDING VS HOME)
+Unauthenticated -> Landing Page
+Authenticated -> Navbar + Home Page
+=========================================================
+*/
+function RootIndex() {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: '#F5F8F6',
+          color: '#5B6B65',
+          fontFamily: "'Inter', sans-serif",
+          fontSize: '15px',
+        }}
+      >
+        Initializing HQ Dopamine...
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Landing />;
+  }
+
+  return (
+    <>
+      <Navbar />
+      <Home />
+    </>
+  );
+}
+
+/*
+=========================================================
 PROTECTED LAYOUT
 =========================================================
-
-Everything inside ProtectedRoute will be authenticated.
-
-Navbar is displayed on every protected page.
-Outlet renders the currently selected protected page.
 */
-
 function ProtectedLayout() {
   return (
     <>
       <Navbar />
-
       <Outlet />
     </>
   );
@@ -46,7 +81,6 @@ function ProtectedLayout() {
 APP
 =========================================================
 */
-
 export default function App() {
   return (
     <AuthProvider>
@@ -54,66 +88,31 @@ export default function App() {
         <Routes>
 
           {/* =================================================
-              PUBLIC ROUTES
+              ROOT INDEX (LANDING PAGE OR HOME)
           ================================================= */}
+          <Route path="/" element={<RootIndex />} />
 
-          <Route
-            path="/auth"
-            element={<Auth />}
-          />
-
+          {/* =================================================
+              AUTH PAGE (LOGIN / SIGNUP)
+          ================================================= */}
+          <Route path="/auth" element={<Auth />} />
 
           {/* =================================================
               PROTECTED ROUTES
           ================================================= */}
-
           <Route element={<ProtectedRoute />}>
-
             <Route element={<ProtectedLayout />}>
-
-              {/* Home */}
-              <Route
-                path="/"
-                element={<Home />}
-              />
-
-              {/* Dashboard */}
-              <Route
-                path="/dashboard"
-                element={<Dashboard />}
-              />
-
-              {/* Manual Food Log */}
-              <Route
-                path="/log"
-                element={<Log />}
-              />
-
-              {/* AI Food Photo */}
-              <Route
-                path="/upload"
-                element={<UploadPhoto />}
-              />
-
-              {/* Gemini Pipeline Test */}
-              <Route
-                path="/test"
-                element={<TestPipeline />}
-              />
-
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/log" element={<Log />} />
+              <Route path="/upload" element={<UploadPhoto />} />
+              <Route path="/test" element={<TestPipeline />} />
             </Route>
-
           </Route>
 
-
           {/* =================================================
-              UNKNOWN URL
+              FALLBACK ROUTE
           ================================================= */}
-
-          <Route
-            path="*"
-            element={<Navigate to="/auth" replace />}
-          />
+          <Route path="*" element={<Navigate to="/" replace />} />
 
         </Routes>
       </BrowserRouter>

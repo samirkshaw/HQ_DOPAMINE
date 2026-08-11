@@ -290,81 +290,78 @@ export default function UploadPhoto({ onFoodAnalyzed }) {
         .ai-scanner {
           width: 100%;
           box-sizing: border-box;
-          padding: 22px;
-          margin-bottom: 18px;
-          border: 1px solid rgba(139, 92, 246, 0.18);
-          border-radius: 17px;
-          background:
-            radial-gradient(
-              circle at 0% 0%,
-              rgba(139, 92, 246, 0.09),
-              transparent 45%
-            ),
-            rgba(18, 18, 24, 0.88);
-          box-shadow:
-            0 20px 50px rgba(0, 0, 0, 0.22),
-            inset 0 1px 0 rgba(255, 255, 255, 0.025);
+          padding: 28px;
+          margin-bottom: 24px;
+          border: 1px solid rgba(255, 255, 255, 0.9);
+          border-radius: 20px;
+          background: rgba(255, 255, 255, 0.65);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          box-shadow: 0 12px 32px rgba(16, 36, 30, 0.06);
         }
 
         .ai-upload-badge {
           display: inline-block;
           margin-bottom: 9px;
-          padding: 5px 9px;
-          border: 1px solid rgba(139, 92, 246, 0.3);
+          padding: 5px 12px;
+          border: 1px solid rgba(31, 158, 118, 0.25);
           border-radius: 999px;
-          color: #c4b5fd;
-          background: rgba(139, 92, 246, 0.08);
-          font-size: 10px;
-          font-weight: 800;
+          color: #1F9E76;
+          background: rgba(31, 158, 118, 0.1);
+          font-size: 11px;
+          font-weight: 700;
           letter-spacing: 1px;
         }
 
         .ai-upload-header h2 {
           margin: 0;
-          color: #ffffff;
-          font-size: 19px;
-          font-weight: 800;
+          color: #10241E;
+          font-family: var(--font-display);
+          font-size: 24px;
+          font-weight: 700;
         }
 
         .ai-upload-header p {
-          margin: 7px 0 16px;
-          color: #8d8da1;
-          font-size: 12px;
+          margin: 6px 0 20px;
+          color: #5B6B65;
+          font-size: 14px;
           line-height: 1.5;
         }
 
         .ai-upload-buttons {
           display: flex;
           flex-wrap: wrap;
-          gap: 9px;
+          gap: 12px;
         }
 
         .ai-button {
-          min-height: 36px;
-          padding: 0 13px;
-          border-radius: 9px;
+          min-height: 42px;
+          padding: 0 20px;
+          border-radius: 999px;
           font-family: inherit;
-          font-size: 12px;
-          font-weight: 700;
+          font-size: 14px;
+          font-weight: 600;
           cursor: pointer;
+          transition: all 0.2s ease;
         }
 
         .ai-button-secondary {
-          border: 1px solid #8b5cf6;
-          background: transparent;
-          color: #c4b5fd;
+          border: 1px solid rgba(31, 158, 118, 0.3);
+          background: rgba(31, 158, 118, 0.08);
+          color: #1F9E76;
         }
 
         .ai-button-primary {
           border: none;
-          background: #8b5cf6;
+          background: #1F9E76;
           color: white;
+          box-shadow: 0 4px 14px rgba(31, 158, 118, 0.25);
         }
 
         .ai-button-clear {
-          border: 1px solid #292932;
-          background: #111116;
-          color: #aaaabc;
+          border: 1px solid rgba(16, 36, 30, 0.12);
+          background: rgba(255, 255, 255, 0.8);
+          color: #5B6B65;
         }
 
         .ai-button:disabled {
@@ -374,16 +371,16 @@ export default function UploadPhoto({ onFoodAnalyzed }) {
 
         .ai-preview {
           width: 100%;
-          margin-bottom: 14px;
+          margin-bottom: 16px;
           overflow: hidden;
-          border-radius: 12px;
-          border: 1px solid #292932;
+          border-radius: 14px;
+          border: 1px solid rgba(16, 36, 30, 0.12);
         }
 
         .ai-preview img {
           display: block;
           width: 100%;
-          max-height: 320px;
+          max-height: 340px;
           object-fit: cover;
         }
 
@@ -391,16 +388,17 @@ export default function UploadPhoto({ onFoodAnalyzed }) {
           display: flex;
           align-items: center;
           gap: 10px;
-          margin-top: 15px;
-          color: #a78bfa;
-          font-size: 12px;
+          margin-top: 16px;
+          color: #1F9E76;
+          font-size: 13px;
+          font-weight: 600;
         }
 
         .ai-spinner {
-          width: 14px;
-          height: 14px;
-          border: 2px solid rgba(139, 92, 246, 0.2);
-          border-top-color: #8b5cf6;
+          width: 16px;
+          height: 16px;
+          border: 2px solid rgba(31, 158, 118, 0.2);
+          border-top-color: #1F9E76;
           border-radius: 50%;
           animation: ai-spin 0.8s linear infinite;
         }
@@ -412,36 +410,37 @@ export default function UploadPhoto({ onFoodAnalyzed }) {
         }
 
         .ai-error {
-          margin-top: 14px;
-          padding: 10px 12px;
-          border: 1px solid rgba(248, 113, 113, 0.18);
-          border-radius: 9px;
-          background: rgba(248, 113, 113, 0.08);
-          color: #fca5a5;
-          font-size: 12px;
+          margin-top: 16px;
+          padding: 12px;
+          border: 1px solid rgba(239, 68, 68, 0.25);
+          border-radius: 10px;
+          background: rgba(239, 68, 68, 0.1);
+          color: #dc2626;
+          font-size: 13px;
         }
 
         .ai-results {
-          margin-top: 20px;
+          margin-top: 24px;
         }
 
         .ai-results h3 {
-          margin: 0 0 10px;
-          color: #ffffff;
-          font-size: 15px;
+          margin: 0 0 14px;
+          color: #10241E;
+          font-family: var(--font-display);
+          font-size: 18px;
         }
 
         .ai-food-list {
           display: flex;
           flex-direction: column;
-          gap: 9px;
+          gap: 12px;
         }
 
         .ai-food-card {
-          padding: 13px;
-          border: 1px solid rgba(255, 255, 255, 0.07);
-          border-radius: 11px;
-          background: rgba(10, 10, 15, 0.65);
+          padding: 16px;
+          border: 1px solid rgba(16, 36, 30, 0.08);
+          border-radius: 14px;
+          background: rgba(255, 255, 255, 0.75);
         }
 
         .ai-food-card-top {
@@ -457,56 +456,56 @@ export default function UploadPhoto({ onFoodAnalyzed }) {
         }
 
         .ai-food-card-top strong {
-          color: #ffffff;
-          font-size: 13px;
+          color: #10241E;
+          font-size: 15px;
         }
 
         .ai-food-card-top span {
-          color: #666676;
-          font-size: 10px;
+          color: #5B6B65;
+          font-size: 12px;
         }
 
         .ai-food-card-top > strong:last-child {
           flex-shrink: 0;
-          color: #a78bfa;
+          color: #FF8F6B;
+          font-family: var(--font-mono);
+          font-size: 15px;
         }
 
         .ai-nutrients {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 6px;
-          margin-top: 11px;
+          gap: 8px;
+          margin-top: 12px;
         }
 
         .ai-nutrients span {
-          padding: 7px;
-          border-radius: 7px;
-          background: rgba(255, 255, 255, 0.025);
-          color: #aaaabc;
-          font-size: 10px;
+          padding: 8px 10px;
+          border-radius: 8px;
+          background: rgba(16, 36, 30, 0.04);
+          color: #10241E;
+          font-family: var(--font-mono);
+          font-size: 12px;
         }
 
         .ai-save-results {
           width: 100%;
-          height: 40px;
-          margin-top: 13px;
+          height: 46px;
+          margin-top: 16px;
           border: none;
-          border-radius: 9px;
-          background: linear-gradient(
-            90deg,
-            #8b5cf6,
-            #9257f5
-          );
+          border-radius: 999px;
+          background: #1F9E76;
           color: white;
           font-family: inherit;
-          font-size: 12px;
-          font-weight: 800;
+          font-size: 15px;
+          font-weight: 600;
           cursor: pointer;
+          box-shadow: 0 4px 14px rgba(31, 158, 118, 0.25);
         }
 
         @media (max-width: 500px) {
           .ai-scanner {
-            padding: 18px;
+            padding: 20px;
           }
 
           .ai-nutrients {
