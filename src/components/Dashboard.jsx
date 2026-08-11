@@ -56,523 +56,6 @@ function groupFoodsByMeal(foodList) {
 }
 
 
-const styles = `
-  .hq-dashboard {
-    min-height: calc(100vh - 64px);
-    box-sizing: border-box;
-    padding: 42px 24px 80px;
-    color: #10241E;
-    font-family: var(--font-body);
-  }
-
-  .hq-dashboard-container {
-    width: 100%;
-    max-width: 1000px;
-    margin: 0 auto;
-  }
-
-  .hq-dashboard-header {
-    margin-bottom: 28px;
-  }
-
-  .hq-dashboard-eyebrow {
-    margin-bottom: 8px;
-    color: #1F9E76;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-
-  .hq-dashboard-title {
-    margin: 0;
-    color: #10241E;
-    font-family: var(--font-display);
-    font-size: 36px;
-    line-height: 1.1;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-  }
-
-  .hq-dashboard-subtitle {
-    margin: 10px 0 0;
-    color: #5B6B65;
-    font-size: 15px;
-  }
-
-  .hq-stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 16px;
-    margin-bottom: 30px;
-  }
-
-  .hq-stat-card {
-    box-sizing: border-box;
-    min-height: 140px;
-    padding: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    border-radius: 18px;
-    background: rgba(255, 255, 255, 0.65);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    box-shadow: 0 10px 28px rgba(16, 36, 30, 0.05);
-  }
-
-  .hq-stat-label {
-    color: #5B6B65;
-    font-size: 13px;
-    font-weight: 600;
-  }
-
-  .hq-stat-value {
-    margin-top: 14px;
-    color: #10241E;
-    font-family: var(--font-mono);
-    font-size: 30px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-  }
-
-  .hq-stat-unit {
-    margin-left: 5px;
-    color: #1F9E76;
-    font-size: 13px;
-    font-weight: 600;
-  }
-
-  .hq-stat-description {
-    margin-top: 6px;
-    color: #5B6B65;
-    font-size: 12px;
-  }
-
-  .hq-targets-section {
-    margin-bottom: 30px;
-  }
-
-  .hq-targets-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 14px;
-  }
-
-  .hq-targets-title {
-    margin: 0;
-    color: #10241E;
-    font-family: var(--font-display);
-    font-size: 24px;
-    font-weight: 700;
-  }
-
-  .hq-targets-subtitle {
-    color: #5B6B65;
-    font-size: 13px;
-  }
-
-  .hq-targets-header-right {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .hq-targets-card {
-    box-sizing: border-box;
-    width: 100%;
-    padding: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.65);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    box-shadow: 0 12px 32px rgba(16, 36, 30, 0.06);
-  }
-
-  .hq-target-row {
-    margin-bottom: 20px;
-  }
-
-  .hq-target-row:last-child {
-    margin-bottom: 0;
-  }
-
-  .hq-target-info {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 8px;
-  }
-
-  .hq-target-name {
-    color: #10241E;
-    font-size: 14px;
-    font-weight: 600;
-  }
-
-  .hq-target-values {
-    color: #5B6B65;
-    font-family: var(--font-mono);
-    font-size: 13px;
-  }
-
-  .hq-target-current {
-    color: #10241E;
-    font-weight: 700;
-  }
-
-  .hq-target-bar {
-    width: 100%;
-    height: 10px;
-    overflow: hidden;
-    border-radius: 999px;
-    background: rgba(16, 36, 30, 0.08);
-  }
-
-  .hq-target-progress {
-    height: 100%;
-    border-radius: inherit;
-    background: linear-gradient(
-      90deg,
-      #1F9E76,
-      #34D399
-    );
-    transition: width 0.4s ease;
-  }
-
-  .hq-target-progress.complete {
-    background: linear-gradient(
-      90deg,
-      #1F9E76,
-      #059669
-    );
-  }
-
-  .hq-section {
-    margin-top: 32px;
-  }
-
-  .hq-section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 14px;
-  }
-
-  .hq-section-title {
-    margin: 0;
-    color: #10241E;
-    font-family: var(--font-display);
-    font-size: 24px;
-    font-weight: 700;
-  }
-
-  .hq-section-count {
-    color: #5B6B65;
-    font-size: 13px;
-  }
-
-  .hq-food-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .hq-food-card {
-    box-sizing: border-box;
-    width: 100%;
-    padding: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.65);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    box-shadow: 0 4px 16px rgba(16, 36, 30, 0.04);
-  }
-
-  .hq-food-top {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 16px;
-  }
-
-  .hq-food-name {
-    margin: 0;
-    color: #10241E;
-    font-size: 16px;
-    font-weight: 700;
-  }
-
-  .hq-food-date {
-    margin-top: 4px;
-    color: #5B6B65;
-    font-size: 12px;
-  }
-
-  .hq-food-calories {
-    color: #FF8F6B;
-    font-family: var(--font-mono);
-    font-size: 15px;
-    font-weight: 700;
-    background: rgba(255, 143, 107, 0.12);
-    padding: 4px 10px;
-    border-radius: 999px;
-    white-space: nowrap;
-  }
-
-  .hq-food-nutrition {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-top: 14px;
-  }
-
-  .hq-food-nutrition-item {
-    padding: 10px 12px;
-    border-radius: 10px;
-    background: rgba(16, 36, 30, 0.04);
-  }
-
-  .hq-food-nutrition-value {
-    display: block;
-    color: #10241E;
-    font-family: var(--font-mono);
-    font-size: 14px;
-    font-weight: 700;
-  }
-
-  .hq-food-nutrition-label {
-    display: block;
-    margin-top: 2px;
-    color: #5B6B65;
-    font-size: 11px;
-  }
-
-  .hq-empty {
-    box-sizing: border-box;
-    width: 100%;
-    min-height: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-    border: 1px dashed rgba(16, 36, 30, 0.2);
-    border-radius: 16px;
-    color: #5B6B65;
-    font-size: 14px;
-    background: rgba(255, 255, 255, 0.4);
-    text-align: center;
-  }
-
-  .hq-error {
-    box-sizing: border-box;
-    padding: 14px;
-    margin-bottom: 20px;
-    border: 1px solid rgba(239, 68, 68, 0.25);
-    border-radius: 10px;
-    background: rgba(239, 68, 68, 0.1);
-    color: #dc2626;
-    font-size: 13px;
-  }
-
-  .hq-refresh-button,
-  .hq-recalculate-button,
-  .hq-guidance-button {
-    border: 1px solid rgba(31, 158, 118, 0.3);
-    border-radius: 999px;
-    padding: 8px 16px;
-    background: rgba(31, 158, 118, 0.1);
-    color: #1F9E76;
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .hq-refresh-button:hover,
-  .hq-recalculate-button:hover,
-  .hq-guidance-button:hover {
-    background: rgba(31, 158, 118, 0.2);
-  }
-
-  .hq-refresh-button:disabled,
-  .hq-recalculate-button:disabled,
-  .hq-guidance-button:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-  }
-
-  .hq-guidance-section {
-    margin-bottom: 30px;
-  }
-
-  .hq-guidance-card {
-    box-sizing: border-box;
-    width: 100%;
-    padding: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    border-radius: 20px;
-    background: linear-gradient(135deg, rgba(217, 242, 230, 0.6) 0%, rgba(255, 255, 255, 0.7) 100%);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    box-shadow: 0 12px 32px rgba(16, 36, 30, 0.06);
-  }
-
-  .hq-guidance-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 14px;
-    margin-bottom: 14px;
-  }
-
-  .hq-guidance-title {
-    margin: 0;
-    color: #10241E;
-    font-family: var(--font-display);
-    font-size: 20px;
-    font-weight: 700;
-  }
-
-  .hq-guidance-subtitle {
-    margin-top: 4px;
-    color: #5B6B65;
-    font-size: 12px;
-  }
-
-  .hq-guidance-button {
-    flex-shrink: 0;
-    color: #ffffff;
-    border: none;
-    background: #1F9E76;
-    box-shadow: 0 4px 12px rgba(31, 158, 118, 0.25);
-  }
-
-  .hq-guidance-button:hover {
-    background: #178361;
-  }
-
-  .hq-guidance-result {
-    padding: 16px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.75);
-    border: 1px solid rgba(16, 36, 30, 0.08);
-    color: #10241E;
-    font-size: 14px;
-    line-height: 1.6;
-  }
-
-  .hq-guidance-label {
-    display: block;
-    margin-bottom: 6px;
-    color: #1F9E76;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-
-  .hq-guidance-error {
-    padding: 12px 14px;
-    border-radius: 10px;
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.25);
-    color: #dc2626;
-    font-size: 13px;
-  }
-
-  .hq-profile-warning {
-    box-sizing: border-box;
-    padding: 20px;
-    border: 1px dashed rgba(16, 36, 30, 0.2);
-    border-radius: 16px;
-    color: #5B6B65;
-    font-size: 14px;
-    line-height: 1.6;
-    background: rgba(255, 255, 255, 0.4);
-    text-align: center;
-  }
-
-  .hq-profile-warning strong {
-    color: #10241E;
-  }
-
-  .hq-ai-status {
-    margin-top: 8px;
-    color: #5B6B65;
-    font-size: 12px;
-  }
-
-  .hq-success {
-    box-sizing: border-box;
-    padding: 10px 14px;
-    margin-bottom: 14px;
-    border: 1px solid rgba(31, 158, 118, 0.25);
-    border-radius: 10px;
-    background: rgba(31, 158, 118, 0.1);
-    color: #1F9E76;
-    font-size: 13px;
-  }
-
-  @media (max-width: 800px) {
-    .hq-stats-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  @media (max-width: 500px) {
-    .hq-dashboard {
-      padding: 28px 14px 60px;
-    }
-
-    .hq-dashboard-title {
-      font-size: 30px;
-    }
-
-    .hq-stats-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .hq-targets-card,
-    .hq-guidance-card {
-      padding: 16px;
-    }
-
-    .hq-target-info {
-      align-items: flex-start;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .hq-targets-header,
-    .hq-guidance-top {
-      align-items: flex-start;
-      flex-direction: column;
-    }
-
-    .hq-targets-header-right {
-      width: 100%;
-      justify-content: space-between;
-    }
-
-    .hq-guidance-button {
-      width: 100%;
-    }
-
-    .hq-food-top {
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .hq-food-nutrition {
-      grid-template-columns: 1fr;
-    }
-  }
-`;
-
 export default function Dashboard() {
   const { user } = useAuth();
 
@@ -1162,185 +645,183 @@ export default function Dashboard() {
   */
 
   return (
-    <>
-      <style>{styles}</style>
+    <main className="min-h-[calc(100vh-64px)] px-4 py-8 sm:px-6 sm:py-12 text-[#10241E]">
+      <div className="w-full max-w-5xl mx-auto">
 
-      <main className="hq-dashboard">
-        <div className="hq-dashboard-container">
+        <header className="mb-7">
+          <div className="text-[#1F9E76] text-xs font-bold tracking-widest uppercase mb-2">
+            HQ DOPAMINE
+          </div>
 
-          <header className="hq-dashboard-header">
-            <div className="hq-dashboard-eyebrow">
-              HQ DOPAMINE
+          <h1 className="font-display text-3xl sm:text-4xl font-bold text-[#10241E] tracking-tight leading-tight">
+            Dashboard
+          </h1>
+
+          <p className="mt-2 text-[#5B6B65] text-sm sm:text-base">
+            Your personalized nutrition overview
+            for today.
+          </p>
+        </header>
+
+        {error && (
+          <div className="mb-6 p-3.5 rounded-xl bg-red-500/10 border border-red-500/25 text-red-600 text-xs sm:text-sm">
+            {error}
+          </div>
+        )}
+
+        {/* =================================================
+            TODAY'S TOTALS
+        ================================================= */}
+
+        <section className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
+
+          <div className="glass-card p-4 sm:p-5 rounded-2xl min-h-[120px] sm:min-h-[140px] flex flex-col justify-between">
+            <div className="text-[#5B6B65] text-xs font-semibold tracking-wide">
+              CALORIES
             </div>
 
-            <h1 className="hq-dashboard-title">
-              Dashboard
-            </h1>
+            <div className="font-mono text-2xl sm:text-3xl font-bold text-[#10241E] tracking-tight my-1">
+              {loading
+                ? "—"
+                : Math.round(
+                    totals.calories
+                  )}
 
-            <p className="hq-dashboard-subtitle">
-              Your personalized nutrition overview
-              for today.
-            </p>
-          </header>
-
-          {error && (
-            <div className="hq-error">
-              {error}
-            </div>
-          )}
-
-          {/* =================================================
-              TODAY'S TOTALS
-          ================================================= */}
-
-          <section className="hq-stats-grid">
-
-            <div className="hq-stat-card">
-              <div className="hq-stat-label">
-                CALORIES
-              </div>
-
-              <div className="hq-stat-value">
-                {loading
-                  ? "—"
-                  : Math.round(
-                      totals.calories
-                    )}
-
-                <span className="hq-stat-unit">
-                  kcal
-                </span>
-              </div>
-
-              <div className="hq-stat-description">
-                Today's intake
-              </div>
+              <span className="text-xs font-semibold text-[#1F9E76] ml-1">
+                kcal
+              </span>
             </div>
 
-            <div className="hq-stat-card">
-              <div className="hq-stat-label">
-                PROTEIN
-              </div>
+            <div className="text-[#5B6B65] text-xs">
+              Today's intake
+            </div>
+          </div>
 
-              <div className="hq-stat-value">
-                {loading
-                  ? "—"
-                  : totals.protein_g.toFixed(1)}
-
-                <span className="hq-stat-unit">
-                  g
-                </span>
-              </div>
-
-              <div className="hq-stat-description">
-                Total protein
-              </div>
+          <div className="glass-card p-4 sm:p-5 rounded-2xl min-h-[120px] sm:min-h-[140px] flex flex-col justify-between">
+            <div className="text-[#5B6B65] text-xs font-semibold tracking-wide">
+              PROTEIN
             </div>
 
-            <div className="hq-stat-card">
-              <div className="hq-stat-label">
-                CARBS
-              </div>
+            <div className="font-mono text-2xl sm:text-3xl font-bold text-[#10241E] tracking-tight my-1">
+              {loading
+                ? "—"
+                : totals.protein_g.toFixed(1)}
 
-              <div className="hq-stat-value">
-                {loading
-                  ? "—"
-                  : totals.carbs_g.toFixed(1)}
-
-                <span className="hq-stat-unit">
-                  g
-                </span>
-              </div>
-
-              <div className="hq-stat-description">
-                Total carbohydrates
-              </div>
+              <span className="text-xs font-semibold text-[#1F9E76] ml-1">
+                g
+              </span>
             </div>
 
-            <div className="hq-stat-card">
-              <div className="hq-stat-label">
-                FAT
-              </div>
+            <div className="text-[#5B6B65] text-xs">
+              Total protein
+            </div>
+          </div>
 
-              <div className="hq-stat-value">
-                {loading
-                  ? "—"
-                  : totals.fat_g.toFixed(1)}
-
-                <span className="hq-stat-unit">
-                  g
-                </span>
-              </div>
-
-              <div className="hq-stat-description">
-                Total fat
-              </div>
+          <div className="glass-card p-4 sm:p-5 rounded-2xl min-h-[120px] sm:min-h-[140px] flex flex-col justify-between">
+            <div className="text-[#5B6B65] text-xs font-semibold tracking-wide">
+              CARBS
             </div>
 
-          </section>
+            <div className="font-mono text-2xl sm:text-3xl font-bold text-[#10241E] tracking-tight my-1">
+              {loading
+                ? "—"
+                : totals.carbs_g.toFixed(1)}
 
-          {/* =================================================
-              DAILY TARGETS
-          ================================================= */}
+              <span className="text-xs font-semibold text-[#1F9E76] ml-1">
+                g
+              </span>
+            </div>
 
-          <section className="hq-targets-section">
+            <div className="text-[#5B6B65] text-xs">
+              Total carbohydrates
+            </div>
+          </div>
 
-            <div className="hq-targets-header">
+          <div className="glass-card p-4 sm:p-5 rounded-2xl min-h-[120px] sm:min-h-[140px] flex flex-col justify-between">
+            <div className="text-[#5B6B65] text-xs font-semibold tracking-wide">
+              FAT
+            </div>
 
-              <h2 className="hq-targets-title">
-                Daily Targets
-              </h2>
+            <div className="font-mono text-2xl sm:text-3xl font-bold text-[#10241E] tracking-tight my-1">
+              {loading
+                ? "—"
+                : totals.fat_g.toFixed(1)}
 
-              <div className="hq-targets-header-right">
+              <span className="text-xs font-semibold text-[#1F9E76] ml-1">
+                g
+              </span>
+            </div>
 
-                <span className="hq-targets-subtitle">
-                  AI personalized
-                </span>
+            <div className="text-[#5B6B65] text-xs">
+              Total fat
+            </div>
+          </div>
 
-                <button
-                  className="hq-recalculate-button"
-                  onClick={recalculateTargets}
-                  disabled={recalculating}
-                >
-                  {recalculating
-                    ? "Recalculating..."
-                    : "Recalculate"}
-                </button>
+        </section>
 
-              </div>
+        {/* =================================================
+            DAILY TARGETS
+        ================================================= */}
+
+        <section className="mb-8">
+
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3.5">
+
+            <h2 className="font-display text-xl sm:text-2xl font-bold text-[#10241E]">
+              Daily Targets
+            </h2>
+
+            <div className="flex items-center justify-between sm:justify-start gap-3">
+
+              <span className="text-[#5B6B65] text-xs sm:text-sm">
+                AI personalized
+              </span>
+
+              <button
+                className="px-3.5 py-1.5 text-xs font-semibold text-[#1F9E76] bg-[#1F9E76]/10 border border-[#1F9E76]/30 rounded-full hover:bg-[#1F9E76]/20 transition-all cursor-pointer disabled:opacity-55 disabled:cursor-not-allowed"
+                onClick={recalculateTargets}
+                disabled={recalculating}
+              >
+                {recalculating
+                  ? "Recalculating..."
+                  : "Recalculate"}
+              </button>
 
             </div>
 
-            <div className="hq-targets-card">
+          </div>
 
-              {targetSuccess && (
-                <div className="hq-success">
-                  {targetSuccess}
-                </div>
-              )}
+          <div className="glass-card p-4 sm:p-6 rounded-2xl">
 
-              {targetsLoading ? (
-                <div className="hq-empty">
-                  <div>
-                    Loading your personalized
-                    nutrition targets...
-                    <div className="hq-ai-status">
-                      Using your saved AI targets.
-                    </div>
+            {targetSuccess && (
+              <div className="mb-4 p-3 rounded-xl bg-[#1F9E76]/10 border border-[#1F9E76]/25 text-[#1F9E76] text-xs sm:text-sm font-medium">
+                {targetSuccess}
+              </div>
+            )}
+
+            {targetsLoading ? (
+              <div className="p-6 text-center border border-dashed border-[#10241E]/20 rounded-xl text-[#5B6B65] text-sm bg-white/40">
+                <div>
+                  Loading your personalized
+                  nutrition targets...
+                  <div className="text-xs text-[#5B6B65] mt-1">
+                    Using your saved AI targets.
                   </div>
                 </div>
-              ) : targetsError ? (
-                <div className="hq-profile-warning">
-                  <strong>
-                    Daily targets unavailable
-                  </strong>
+              </div>
+            ) : targetsError ? (
+              <div className="p-5 text-center border border-dashed border-[#10241E]/20 rounded-xl text-[#5B6B65] text-sm bg-white/40 leading-relaxed">
+                <strong className="text-[#10241E]">
+                  Daily targets unavailable
+                </strong>
 
-                  <br />
+                <br />
 
-                  {targetsError}
-                </div>
-              ) : (
-                targetRows.map((item) => {
+                {targetsError}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {targetRows.map((item) => {
 
                   const progress =
                     getProgress(
@@ -1350,19 +831,19 @@ export default function Dashboard() {
 
                   return (
                     <div
-                      className="hq-target-row"
+                      className="flex flex-col gap-1.5"
                       key={item.label}
                     >
 
-                      <div className="hq-target-info">
+                      <div className="flex items-center justify-between gap-3 text-xs sm:text-sm">
 
-                        <span className="hq-target-name">
+                        <span className="font-semibold text-[#10241E]">
                           {item.label}
                         </span>
 
-                        <span className="hq-target-values">
+                        <span className="font-mono text-[#5B6B65]">
 
-                          <span className="hq-target-current">
+                          <span className="font-bold text-[#10241E]">
                             {item.current}
                           </span>
 
@@ -1375,13 +856,13 @@ export default function Dashboard() {
 
                       </div>
 
-                      <div className="hq-target-bar">
+                      <div className="w-full h-2.5 bg-[#10241E]/8 rounded-full overflow-hidden">
 
                         <div
-                          className={`hq-target-progress ${
+                          className={`h-full rounded-full transition-all duration-500 ${
                             progress >= 100
-                              ? "complete"
-                              : ""
+                              ? "bg-gradient-to-r from-[#1F9E76] to-[#059669]"
+                              : "bg-gradient-to-r from-[#1F9E76] to-[#34D399]"
                           }`}
                           style={{
                             width: `${progress}%`,
@@ -1392,148 +873,145 @@ export default function Dashboard() {
 
                     </div>
                   );
-                })
-              )}
-
-            </div>
-
-          </section>
-
-          {/* =================================================
-              AI DAILY GUIDANCE
-          ================================================= */}
-
-          <section className="hq-guidance-section">
-
-            <div className="hq-guidance-card">
-
-              <div className="hq-guidance-top">
-
-                <div>
-                  <h2 className="hq-guidance-title">
-                    AI Daily Guidance
-                  </h2>
-
-                  <div className="hq-guidance-subtitle">
-                    Gemini compares today's intake
-                    with your nutrition targets.
-                  </div>
-                </div>
-
-                <button
-                  className="hq-guidance-button"
-                  onClick={getDailyGuidance}
-                  disabled={
-                    guidanceLoading ||
-                    !targets ||
-                    foods.length === 0
-                  }
-                >
-                  {guidanceLoading
-                    ? "Analyzing..."
-                    : "Get Today's Guidance"}
-                </button>
-
-              </div>
-
-              {guidanceError && (
-                <div className="hq-guidance-error">
-                  {guidanceError}
-                </div>
-              )}
-
-              {guidance && (
-                <div className="hq-guidance-result">
-                  <span className="hq-guidance-label">
-                    Today's insight
-                  </span>
-
-                  {guidance}
-                </div>
-              )}
-
-              {!guidance &&
-                !guidanceError &&
-                !guidanceLoading && (
-                  <div className="hq-empty">
-                    Click "Get Today's Guidance" to
-                    have Gemini review today's
-                    nutrition.
-                  </div>
-                )}
-
-              {guidanceLoading && (
-                <div className="hq-empty">
-                  Gemini is reviewing today's
-                  nutrition against your targets...
-                </div>
-              )}
-
-            </div>
-
-          </section>
-
-          {/* =================================================
-              TODAY'S MEALS
-          ================================================= */}
-
-          <section className="hq-section">
-
-            <div className="hq-section-header">
-
-              <h2 className="hq-section-title">
-                Today's Meals
-              </h2>
-
-              <div>
-
-                <span className="hq-section-count">
-                  {foods.length}{" "}
-                  {foods.length === 1
-                    ? "entry"
-                    : "entries"}
-                </span>
-
-                <button
-                  className="hq-refresh-button"
-                  onClick={loadDashboard}
-                  disabled={loading}
-                  style={{
-                    marginLeft: "10px",
-                  }}
-                >
-                  {loading
-                    ? "Loading..."
-                    : "Refresh"}
-                </button>
-
-              </div>
-
-            </div>
-
-            {loading ? (
-              <div className="hq-empty">
-                Loading today's food...
-              </div>
-            ) : foods.length === 0 ? (
-              <div className="hq-empty">
-                No food logged today yet.
-              </div>
-            ) : (
-              <div className="hq-food-list" style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                {groupFoodsByMeal(foods).map((mealItems, idx) => (
-                  <MealLogCard
-                    key={mealItems[0].meal_group_id || mealItems[0].id || idx}
-                    items={mealItems}
-                  />
-                ))}
+                })}
               </div>
             )}
 
-          </section>
+          </div>
 
-        </div>
-      </main>
-    </>
+        </section>
+
+        {/* =================================================
+            AI DAILY GUIDANCE
+        ================================================= */}
+
+        <section className="mb-8">
+
+          <div className="p-4 sm:p-6 rounded-2xl bg-gradient-to-br from-[#D9F2E6]/60 to-white/70 backdrop-blur-md border border-white/90 shadow-xs">
+
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+
+              <div>
+                <h2 className="font-display text-lg sm:text-xl font-bold text-[#10241E]">
+                  AI Daily Guidance
+                </h2>
+
+                <div className="text-[#5B6B65] text-xs mt-0.5">
+                  Gemini compares today's intake
+                  with your nutrition targets.
+                </div>
+              </div>
+
+              <button
+                className="w-full sm:w-auto px-4 py-2 text-xs font-semibold text-white bg-[#1F9E76] hover:bg-[#178361] rounded-full shadow-md transition-all cursor-pointer disabled:opacity-55 disabled:cursor-not-allowed shrink-0"
+                onClick={getDailyGuidance}
+                disabled={
+                  guidanceLoading ||
+                  !targets ||
+                  foods.length === 0
+                }
+              >
+                {guidanceLoading
+                  ? "Analyzing..."
+                  : "Get Today's Guidance"}
+              </button>
+
+            </div>
+
+            {guidanceError && (
+              <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/25 text-red-600 text-xs sm:text-sm">
+                {guidanceError}
+              </div>
+            )}
+
+            {guidance && (
+              <div className="p-4 rounded-xl bg-white/75 border border-[#10241E]/8 text-[#10241E] text-xs sm:text-sm leading-relaxed">
+                <span className="block text-[#1F9E76] text-[11px] font-bold tracking-wider uppercase mb-1.5">
+                  Today's insight
+                </span>
+
+                {guidance}
+              </div>
+            )}
+
+            {!guidance &&
+              !guidanceError &&
+              !guidanceLoading && (
+                <div className="p-5 text-center border border-dashed border-[#10241E]/15 rounded-xl text-[#5B6B65] text-xs sm:text-sm bg-white/40">
+                  Click "Get Today's Guidance" to
+                  have Gemini review today's
+                  nutrition.
+                </div>
+              )}
+
+            {guidanceLoading && (
+              <div className="p-5 text-center border border-dashed border-[#10241E]/15 rounded-xl text-[#1F9E76] font-medium text-xs sm:text-sm bg-white/40 animate-pulse">
+                Gemini is reviewing today's
+                nutrition against your targets...
+              </div>
+            )}
+
+          </div>
+
+        </section>
+
+        {/* =================================================
+            TODAY'S MEALS
+        ================================================= */}
+
+        <section className="mt-8">
+
+          <div className="flex items-center justify-between gap-2 mb-4">
+
+            <h2 className="font-display text-xl sm:text-2xl font-bold text-[#10241E]">
+              Today's Meals
+            </h2>
+
+            <div className="flex items-center gap-3">
+
+              <span className="text-[#5B6B65] text-xs sm:text-sm">
+                {foods.length}{" "}
+                {foods.length === 1
+                  ? "entry"
+                  : "entries"}
+              </span>
+
+              <button
+                className="px-3.5 py-1.5 text-xs font-semibold text-[#1F9E76] bg-[#1F9E76]/10 border border-[#1F9E76]/30 rounded-full hover:bg-[#1F9E76]/20 transition-all cursor-pointer disabled:opacity-55 disabled:cursor-not-allowed"
+                onClick={loadDashboard}
+                disabled={loading}
+              >
+                {loading
+                  ? "Loading..."
+                  : "Refresh"}
+              </button>
+
+            </div>
+
+          </div>
+
+          {loading ? (
+            <div className="p-6 text-center border border-dashed border-[#10241E]/20 rounded-2xl text-[#5B6B65] text-sm bg-white/40">
+              Loading today's food...
+            </div>
+          ) : foods.length === 0 ? (
+            <div className="p-6 text-center border border-dashed border-[#10241E]/20 rounded-2xl text-[#5B6B65] text-sm bg-white/40">
+              No food logged today yet.
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3.5">
+              {groupFoodsByMeal(foods).map((mealItems, idx) => (
+                <MealLogCard
+                  key={mealItems[0].meal_group_id || mealItems[0].id || idx}
+                  items={mealItems}
+                />
+              ))}
+            </div>
+          )}
+
+        </section>
+
+      </div>
+    </main>
   );
 }

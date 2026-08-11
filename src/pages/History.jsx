@@ -172,182 +172,72 @@ export default function History() {
       : 0;
 
   return (
-    <>
-      <style>{styles}</style>
-      <main className="hq-history-page">
-        <div className="hq-history-container">
-          <header className="hq-history-header">
-            <div className="hq-history-eyebrow">HQ DOPAMINE</div>
-            <h1 className="hq-history-title">Nutrition History</h1>
-            <p className="hq-history-subtitle">
-              Track your daily consistency, weekly completion averages, and monthly target adherence.
-            </p>
-          </header>
+    <main className="min-h-[calc(100vh-64px)] px-4 py-8 sm:px-6 sm:py-12 text-[#10241E]">
+      <div className="w-full max-w-4xl mx-auto">
+        <header className="mb-7">
+          <div className="text-[#1F9E76] text-xs font-bold tracking-widest uppercase mb-2">
+            HQ DOPAMINE
+          </div>
+          <h1 className="font-display text-3xl sm:text-4xl font-bold text-[#10241E] tracking-tight leading-tight">
+            Nutrition History
+          </h1>
+          <p className="mt-2.5 text-[#5B6B65] text-sm sm:text-base leading-relaxed">
+            Track your daily consistency, weekly completion averages, and monthly target adherence.
+          </p>
+        </header>
 
-          {error && <div className="hq-history-error">{error}</div>}
+        {error && (
+          <div className="mb-5 p-3.5 rounded-xl bg-red-500/10 border border-red-500/25 text-red-600 text-xs sm:text-sm">
+            {error}
+          </div>
+        )}
 
-          {/* Side-by-side Weekly & Monthly Report Cards */}
-          <div className="hq-stats-row">
-            {/* THIS WEEK */}
-            <div className="hq-stat-card">
-              <div className="hq-stat-badge">THIS WEEK</div>
-              <div className="hq-stat-main">
-                <span className="hq-stat-number">
-                  {weekOnTrackDays}/{weekTotalDaysSoFar || 7}
-                </span>
-                <span className="hq-stat-unit">days on track</span>
-              </div>
-              <div className="hq-stat-footer">
-                <strong>{weekOnTrackPct}%</strong> on-track rate • {weekAvgCompletion}% avg target completion
-              </div>
+        {/* Side-by-side / Stacked Weekly & Monthly Report Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-8">
+          {/* THIS WEEK */}
+          <div className="glass-card p-5 sm:p-6 rounded-2xl flex flex-col gap-2.5">
+            <div className="text-[#1F9E76] text-[11px] font-extrabold tracking-wider">
+              THIS WEEK
             </div>
-
-            {/* THIS MONTH */}
-            <div className="hq-stat-card">
-              <div className="hq-stat-badge">THIS MONTH</div>
-              <div className="hq-stat-main">
-                <span className="hq-stat-number">
-                  {monthOnTrackDays}/{monthTotalDaysSoFar || todayDateNum}
-                </span>
-                <span className="hq-stat-unit">days on track</span>
-              </div>
-              <div className="hq-stat-footer">
-                <strong>{monthOnTrackPct}%</strong> on-track rate • {monthAvgCompletion}% avg target completion
-              </div>
+            <div className="flex items-baseline gap-2">
+              <span className="font-mono text-3xl sm:text-4xl font-extrabold text-[#10241E] tracking-tight">
+                {weekOnTrackDays}/{weekTotalDaysSoFar || 7}
+              </span>
+              <span className="text-[#5B6B65] text-sm font-medium">days on track</span>
+            </div>
+            <div className="text-xs sm:text-sm text-[#5B6B65] border-t border-[#10241E]/6 pt-2.5 mt-1">
+              <strong className="text-[#10241E] font-semibold">{weekOnTrackPct}%</strong> on-track rate • {weekAvgCompletion}% avg target completion
             </div>
           </div>
 
-          {/* Monthly Nutrition Calendar */}
-          <section className="hq-calendar-section">
-            <NutritionCalendar
-              foodLogs={foodLogs}
-              activeTarget={targets}
-              userCreatedAt={signupDateStr}
-              currentDate={today}
-            />
-          </section>
+          {/* THIS MONTH */}
+          <div className="glass-card p-5 sm:p-6 rounded-2xl flex flex-col gap-2.5">
+            <div className="text-[#1F9E76] text-[11px] font-extrabold tracking-wider">
+              THIS MONTH
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="font-mono text-3xl sm:text-4xl font-extrabold text-[#10241E] tracking-tight">
+                {monthOnTrackDays}/{monthTotalDaysSoFar || todayDateNum}
+              </span>
+              <span className="text-[#5B6B65] text-sm font-medium">days on track</span>
+            </div>
+            <div className="text-xs sm:text-sm text-[#5B6B65] border-t border-[#10241E]/6 pt-2.5 mt-1">
+              <strong className="text-[#10241E] font-semibold">{monthOnTrackPct}%</strong> on-track rate • {monthAvgCompletion}% avg target completion
+            </div>
+          </div>
         </div>
-      </main>
-    </>
+
+        {/* Monthly Nutrition Calendar */}
+        <section className="mt-2">
+          <NutritionCalendar
+            foodLogs={foodLogs}
+            activeTarget={targets}
+            userCreatedAt={signupDateStr}
+            currentDate={today}
+          />
+        </section>
+      </div>
+    </main>
   );
 }
 
-const styles = `
-  .hq-history-page {
-    min-height: calc(100vh - 64px);
-    box-sizing: border-box;
-    padding: 42px 24px 80px;
-    color: #10241E;
-    font-family: var(--font-body);
-  }
-
-  .hq-history-container {
-    width: 100%;
-    max-width: 900px;
-    margin: 0 auto;
-  }
-
-  .hq-history-header {
-    margin-bottom: 28px;
-  }
-
-  .hq-history-eyebrow {
-    margin-bottom: 8px;
-    color: #1F9E76;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-
-  .hq-history-title {
-    margin: 0;
-    color: #10241E;
-    font-family: var(--font-display);
-    font-size: 36px;
-    line-height: 1.1;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-  }
-
-  .hq-history-subtitle {
-    margin: 10px 0 0;
-    color: #5B6B65;
-    font-size: 15px;
-  }
-
-  .hq-history-error {
-    padding: 12px;
-    margin-bottom: 20px;
-    border: 1px solid rgba(239, 68, 68, 0.25);
-    border-radius: 10px;
-    background: rgba(239, 68, 68, 0.1);
-    color: #dc2626;
-    font-size: 13px;
-  }
-
-  .hq-stats-row {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    margin-bottom: 32px;
-  }
-
-  .hq-stat-card {
-    padding: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.65);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    box-shadow: 0 10px 28px rgba(16, 36, 30, 0.05);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .hq-stat-badge {
-    color: #1F9E76;
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 1.5px;
-  }
-
-  .hq-stat-main {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-  }
-
-  .hq-stat-number {
-    font-family: var(--font-mono);
-    font-size: 36px;
-    font-weight: 800;
-    color: #10241E;
-    letter-spacing: -1px;
-  }
-
-  .hq-stat-unit {
-    color: #5B6B65;
-    font-size: 14px;
-    font-weight: 500;
-  }
-
-  .hq-stat-footer {
-    font-size: 13px;
-    color: #5B6B65;
-    border-top: 1px solid rgba(16, 36, 30, 0.06);
-    padding-top: 10px;
-    margin-top: 4px;
-  }
-
-  .hq-calendar-section {
-    margin-top: 10px;
-  }
-
-  @media (max-width: 600px) {
-    .hq-stats-row {
-      grid-template-columns: 1fr;
-    }
-  }
-`;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
@@ -6,157 +6,142 @@ export default function Navbar() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = async () => {
+    setMobileMenuOpen(false);
     await signOut();
     navigate("/");
   };
 
   const isActive = (path) => location.pathname === path;
 
+  const navItems = [
+    { label: "Dashboard", path: "/dashboard" },
+    { label: "Log Food", path: "/log" },
+    { label: "History", path: "/history" },
+    { label: "Profile", path: "/profile" },
+  ];
+
   return (
-    <nav style={styles.navbar}>
-      <div style={styles.leftSection}>
-        <Link to="/dashboard" style={styles.brandLink}>
-          <span style={styles.brandBadge}>HQ</span>
-          <span style={styles.brandName}>DOPAMINE</span>
+    <nav className="sticky top-0 z-50 bg-white/75 backdrop-blur-md border-b border-white/80 shadow-xs">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        
+        {/* Brand Logo */}
+        <Link 
+          to="/dashboard" 
+          className="flex items-center gap-2 text-decoration-none group"
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          <span className="bg-[#1F9E76] text-white text-xs font-extrabold px-2 py-1 rounded-md tracking-wider">
+            HQ
+          </span>
+          <span className="font-display text-xl font-bold text-[#10241E] tracking-tight group-hover:text-[#1F9E76] transition-colors">
+            DOPAMINE
+          </span>
         </Link>
 
-        <div style={styles.navLinksGroup}>
-          <Link
-            to="/dashboard"
-            style={{
-              ...styles.navLink,
-              ...(isActive("/dashboard") ? styles.activeNavLink : {}),
-            }}
-          >
-            Dashboard
-          </Link>
+        {/* Desktop Navigation Links */}
+        <div className="hidden md:flex items-center gap-2 lg:gap-5">
+          {navItems.map((item) => (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                isActive(item.path)
+                  ? "text-[#1F9E76] bg-[#1F9E76]/10 font-semibold"
+                  : "text-[#5B6B65] hover:text-[#10241E] hover:bg-black/5"
+              }`}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
 
-          <Link
-            to="/log"
-            style={{
-              ...styles.navLink,
-              ...(isActive("/log") ? styles.activeNavLink : {}),
-            }}
-          >
-            Log Food
-          </Link>
+        {/* Desktop User Area */}
+        {user && (
+          <div className="hidden md:flex items-center gap-4">
+            <span className="text-xs text-[#5B6B65] font-medium max-w-[180px] truncate" title={user.email}>
+              {user.email}
+            </span>
+            <button
+              onClick={handleLogout}
+              className="px-4 py-1.5 text-xs font-semibold text-[#e05d38] bg-[#FF8F6B]/15 border border-[#FF8F6B]/30 rounded-full hover:bg-[#FF8F6B]/25 transition-all cursor-pointer"
+            >
+              Sign Out
+            </button>
+          </div>
+        )}
 
-          <Link
-            to="/history"
-            style={{
-              ...styles.navLink,
-              ...(isActive("/history") ? styles.activeNavLink : {}),
-            }}
+        {/* Mobile Hamburger Toggle */}
+        <div className="flex md:hidden items-center">
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-2 rounded-xl text-[#10241E] hover:bg-black/5 focus:outline-none"
+            aria-label="Toggle navigation menu"
           >
-            History
-          </Link>
-
-          <Link
-            to="/profile"
-            style={{
-              ...styles.navLink,
-              ...(isActive("/profile") ? styles.activeNavLink : {}),
-            }}
-          >
-            Profile
-          </Link>
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              {mobileMenuOpen ? (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              ) : (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              )}
+            </svg>
+          </button>
         </div>
       </div>
 
-      {user && (
-        <div style={styles.rightSection}>
-          <span style={styles.userEmail}>{user.email}</span>
+      {/* Mobile Menu Dropdown */}
+      {mobileMenuOpen && (
+        <div className="md:hidden border-t border-white/60 bg-white/90 backdrop-blur-lg px-4 pt-3 pb-5 space-y-3 shadow-lg">
+          <div className="flex flex-col space-y-1">
+            {navItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`px-3 py-2.5 rounded-xl text-base font-medium transition-all ${
+                  isActive(item.path)
+                    ? "text-[#1F9E76] bg-[#1F9E76]/10 font-semibold"
+                    : "text-[#10241E] hover:bg-black/5"
+                }`}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
 
-          <button onClick={handleLogout} style={styles.signOutBtn}>
-            Sign Out
-          </button>
+          {user && (
+            <div className="pt-3 border-t border-black/5 flex flex-col space-y-3">
+              <div className="px-3 text-xs text-[#5B6B65] font-medium truncate">
+                Signed in as: <span className="text-[#10241E] font-semibold">{user.email}</span>
+              </div>
+              <button
+                onClick={handleLogout}
+                className="w-full py-2.5 px-4 text-sm font-semibold text-[#e05d38] bg-[#FF8F6B]/15 border border-[#FF8F6B]/30 rounded-xl hover:bg-[#FF8F6B]/25 transition-all text-center cursor-pointer"
+              >
+                Sign Out
+              </button>
+            </div>
+          )}
         </div>
       )}
     </nav>
   );
 }
-
-const styles = {
-  navbar: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "14px 28px",
-    backgroundColor: "rgba(255, 255, 255, 0.65)",
-    backdropFilter: "blur(16px)",
-    WebkitBackdropFilter: "blur(16px)",
-    borderBottom: "1px solid rgba(255, 255, 255, 0.85)",
-    position: "sticky",
-    top: 0,
-    zIndex: 100,
-    boxShadow: "0 4px 20px rgba(16, 36, 30, 0.03)",
-  },
-  leftSection: {
-    display: "flex",
-    gap: "32px",
-    alignItems: "center",
-  },
-  brandLink: {
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-    textDecoration: "none",
-  },
-  brandBadge: {
-    backgroundColor: "#1F9E76",
-    color: "#ffffff",
-    fontWeight: "800",
-    fontSize: "12px",
-    padding: "3px 7px",
-    borderRadius: "6px",
-  },
-  brandName: {
-    fontFamily: "var(--font-display)",
-    fontSize: "19px",
-    fontWeight: "700",
-    color: "#10241E",
-    letterSpacing: "-0.5px",
-  },
-  navLinksGroup: {
-    display: "flex",
-    gap: "20px",
-    alignItems: "center",
-  },
-  navLink: {
-    color: "#5B6B65",
-    textDecoration: "none",
-    fontSize: "14px",
-    fontWeight: "500",
-    padding: "6px 12px",
-    borderRadius: "8px",
-    transition: "all 0.2s ease",
-  },
-  activeNavLink: {
-    color: "#1F9E76",
-    backgroundColor: "rgba(31, 158, 118, 0.1)",
-    fontWeight: "600",
-  },
-  rightSection: {
-    display: "flex",
-    gap: "16px",
-    alignItems: "center",
-  },
-  userEmail: {
-    fontSize: "13px",
-    color: "#5B6B65",
-    fontWeight: "500",
-  },
-  signOutBtn: {
-    padding: "8px 16px",
-    backgroundColor: "rgba(255, 143, 107, 0.15)",
-    color: "#e05d38",
-    border: "1px solid rgba(255, 143, 107, 0.3)",
-    borderRadius: "999px",
-    cursor: "pointer",
-    fontWeight: "600",
-    fontSize: "13px",
-    transition: "all 0.2s ease",
-  },
-};

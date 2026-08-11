@@ -95,53 +95,53 @@ export default function NutritionCalendar({
   const weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
   return (
-    <div style={styles.card}>
-      <div style={styles.header}>
+    <div className="glass-card p-4 sm:p-6 rounded-2xl font-body">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5">
         <div>
-          <span style={styles.eyebrow}>CALENDAR LOG</span>
-          <h2 style={styles.title}>{monthName}</h2>
+          <span className="text-[#1F9E76] text-[11px] font-bold tracking-wider uppercase">CALENDAR LOG</span>
+          <h2 className="font-display text-xl sm:text-2xl font-bold text-[#10241E] mt-0.5">{monthName}</h2>
         </div>
-        <div style={styles.targetBadge}>
-          Target: <strong>{targetCals} kcal/day</strong>
+        <div className="text-xs sm:text-sm text-[#5B6B65] bg-white/80 px-3.5 py-1.5 rounded-full border border-[#10241E]/8 self-start sm:self-auto">
+          Target: <strong className="text-[#10241E]">{targetCals} kcal/day</strong>
         </div>
       </div>
 
       {/* Weekday Labels */}
-      <div style={styles.weekdaysRow}>
+      <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2 text-center">
         {weekdays.map((day) => (
-          <div key={day} style={styles.weekdayLabel}>
+          <div key={day} className="text-[11px] sm:text-xs font-bold text-[#5B6B65] uppercase">
             {day}
           </div>
         ))}
       </div>
 
       {/* Calendar Grid */}
-      <div style={styles.daysGrid}>
+      <div className="grid grid-cols-7 gap-1 sm:gap-2">
         {calendarDays.map((cell) => {
           if (cell.type === 'empty') {
-            return <div key={cell.id} style={styles.emptyCell} />;
+            return <div key={cell.id} className="h-9 sm:h-11" />;
           }
 
-          let cellBg = 'rgba(16, 36, 30, 0.04)';
-          let cellBorder = '1px solid rgba(16, 36, 30, 0.08)';
-          let textColor = '#5B6B65';
-          let dotColor = 'transparent';
+          let cellBg = 'bg-[#10241E]/4';
+          let cellBorder = 'border border-[#10241E]/8';
+          let textColor = 'text-[#5B6B65]';
+          let dotColor = 'bg-transparent';
 
           if (cell.status === 'green') {
-            cellBg = 'rgba(31, 158, 118, 0.15)';
-            cellBorder = '1px solid rgba(31, 158, 118, 0.4)';
-            textColor = '#10241E';
-            dotColor = '#1F9E76';
+            cellBg = 'bg-[#1F9E76]/15';
+            cellBorder = 'border border-[#1F9E76]/40';
+            textColor = 'text-[#10241E]';
+            dotColor = 'bg-[#1F9E76]';
           } else if (cell.status === 'orange') {
-            cellBg = 'rgba(255, 143, 107, 0.18)';
-            cellBorder = '1px solid rgba(255, 143, 107, 0.5)';
-            textColor = '#10241E';
-            dotColor = '#FF8F6B';
+            cellBg = 'bg-[#FF8F6B]/18';
+            cellBorder = 'border border-[#FF8F6B]/50';
+            textColor = 'text-[#10241E]';
+            dotColor = 'bg-[#FF8F6B]';
           } else if (cell.status === 'red') {
-            cellBg = 'rgba(239, 68, 68, 0.15)';
-            cellBorder = '1px solid rgba(239, 68, 68, 0.4)';
-            textColor = '#dc2626';
-            dotColor = '#ef4444';
+            cellBg = 'bg-red-500/15';
+            cellBorder = 'border border-red-500/40';
+            textColor = 'text-red-600';
+            dotColor = 'bg-red-500';
           }
 
           const isSelected = selectedDay?.dayStr === cell.dayStr;
@@ -150,28 +150,17 @@ export default function NutritionCalendar({
             <div
               key={cell.dayStr}
               onClick={() => setSelectedDay(cell)}
-              style={{
-                ...styles.dayCell,
-                backgroundColor: cellBg,
-                border: cellBorder,
-                color: textColor,
-                ...(cell.isToday
-                  ? {
-                      boxShadow: '0 0 0 3px #1F9E76, 0 4px 12px rgba(31, 158, 118, 0.3)',
-                      fontWeight: '800',
-                    }
-                  : {}),
-                ...(isSelected ? { transform: 'scale(1.08)', zIndex: 2 } : {}),
-              }}
+              className={`h-9 sm:h-11 rounded-lg sm:rounded-xl flex flex-col items-center justify-center cursor-pointer relative transition-all select-none ${cellBg} ${cellBorder} ${textColor} ${
+                cell.isToday
+                  ? "ring-2 ring-[#1F9E76] shadow-md font-extrabold"
+                  : ""
+              } ${isSelected ? "scale-105 z-10" : ""}`}
               title={`${cell.dayStr}: ${cell.dayCalories} kcal logged (${cell.statusText})`}
             >
-              <span style={styles.dayNumber}>{cell.dayNumber}</span>
+              <span className="text-xs sm:text-sm font-semibold">{cell.dayNumber}</span>
               {cell.status !== 'neutral' && (
                 <span
-                  style={{
-                    ...styles.statusDot,
-                    backgroundColor: dotColor,
-                  }}
+                  className={`w-1.5 h-1.5 rounded-full absolute bottom-1 ${dotColor}`}
                 />
               )}
             </div>
@@ -181,17 +170,17 @@ export default function NutritionCalendar({
 
       {/* Selected Day Info Popup Banner */}
       {selectedDay && (
-        <div style={styles.selectedBanner}>
-          <div style={styles.selectedLeft}>
-            <span style={styles.selectedDate}>{selectedDay.dayStr}</span>
-            <span style={styles.selectedStatus}>
+        <div className="mt-4 p-3 sm:p-3.5 rounded-xl bg-[#10241E]/6 flex items-center justify-between gap-2 text-xs sm:text-sm">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-bold text-[#10241E]">{selectedDay.dayStr}</span>
+            <span className="text-[#5B6B65]">
               {selectedDay.statusText} • {selectedDay.dayCalories} / {targetCals} kcal
             </span>
           </div>
           <button
             type="button"
             onClick={() => setSelectedDay(null)}
-            style={styles.closeBtn}
+            className="text-[#5B6B65] hover:text-[#10241E] font-bold p-1 cursor-pointer"
           >
             ✕
           </button>
@@ -199,21 +188,21 @@ export default function NutritionCalendar({
       )}
 
       {/* Legend */}
-      <div style={styles.legendRow}>
-        <div style={styles.legendItem}>
-          <span style={{ ...styles.legendDot, backgroundColor: '#1F9E76' }} />
+      <div className="flex flex-wrap items-center gap-3 sm:gap-4 mt-5 pt-4 border-t border-[#10241E]/8 text-xs text-[#5B6B65]">
+        <div className="flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-[#1F9E76]" />
           <span>On Track (85-115%)</span>
         </div>
-        <div style={styles.legendItem}>
-          <span style={{ ...styles.legendDot, backgroundColor: '#FF8F6B' }} />
+        <div className="flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-[#FF8F6B]" />
           <span>Slightly Off</span>
         </div>
-        <div style={styles.legendItem}>
-          <span style={{ ...styles.legendDot, backgroundColor: '#ef4444' }} />
+        <div className="flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-red-500" />
           <span>Missed / Off Target</span>
         </div>
-        <div style={styles.legendItem}>
-          <span style={{ ...styles.legendDot, backgroundColor: 'rgba(16, 36, 30, 0.2)' }} />
+        <div className="flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-[#10241E]/20" />
           <span>Pre-signup / Future</span>
         </div>
       </div>
@@ -221,137 +210,3 @@ export default function NutritionCalendar({
   );
 }
 
-const styles = {
-  card: {
-    padding: '24px',
-    borderRadius: '20px',
-    border: '1px solid rgba(255, 255, 255, 0.9)',
-    backgroundColor: 'rgba(255, 255, 255, 0.65)',
-    backdropFilter: 'blur(16px)',
-    WebkitBackdropFilter: 'blur(16px)',
-    boxShadow: '0 12px 32px rgba(16, 36, 30, 0.06)',
-    fontFamily: 'var(--font-body)',
-  },
-  header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '20px',
-  },
-  eyebrow: {
-    color: '#1F9E76',
-    fontSize: '11px',
-    fontWeight: '700',
-    letterSpacing: '1.5px',
-  },
-  title: {
-    margin: '4px 0 0',
-    fontFamily: 'var(--font-display)',
-    fontSize: '24px',
-    fontWeight: '700',
-    color: '#10241E',
-  },
-  targetBadge: {
-    fontSize: '13px',
-    color: '#5B6B65',
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    padding: '6px 14px',
-    borderRadius: '999px',
-    border: '1px solid rgba(16, 36, 30, 0.08)',
-  },
-  weekdaysRow: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(7, 1fr)',
-    gap: '8px',
-    marginBottom: '10px',
-    textAlign: 'center',
-  },
-  weekdayLabel: {
-    fontSize: '12px',
-    fontWeight: '700',
-    color: '#5B6B65',
-    textTransform: 'uppercase',
-  },
-  daysGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(7, 1fr)',
-    gap: '8px',
-  },
-  emptyCell: {
-    height: '44px',
-  },
-  dayCell: {
-    height: '44px',
-    borderRadius: '12px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    cursor: 'pointer',
-    position: 'relative',
-    transition: 'all 0.2s ease',
-    userSelect: 'none',
-  },
-  dayNumber: {
-    fontSize: '14px',
-    fontWeight: '600',
-  },
-  statusDot: {
-    width: '5px',
-    height: '5px',
-    borderRadius: '50%',
-    position: 'absolute',
-    bottom: '5px',
-  },
-  selectedBanner: {
-    marginTop: '16px',
-    padding: '12px 16px',
-    borderRadius: '12px',
-    backgroundColor: 'rgba(16, 36, 30, 0.06)',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  selectedLeft: {
-    display: 'flex',
-    gap: '12px',
-    alignItems: 'center',
-  },
-  selectedDate: {
-    fontSize: '13px',
-    fontWeight: '700',
-    color: '#10241E',
-  },
-  selectedStatus: {
-    fontSize: '13px',
-    color: '#5B6B65',
-  },
-  closeBtn: {
-    border: 'none',
-    background: 'none',
-    color: '#5B6B65',
-    cursor: 'pointer',
-    fontSize: '14px',
-    fontWeight: 'bold',
-  },
-  legendRow: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: '16px',
-    marginTop: '20px',
-    paddingTop: '16px',
-    borderTop: '1px solid rgba(16, 36, 30, 0.08)',
-    fontSize: '12px',
-    color: '#5B6B65',
-  },
-  legendItem: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-  },
-  legendDot: {
-    width: '8px',
-    height: '8px',
-    borderRadius: '50%',
-  },
-};

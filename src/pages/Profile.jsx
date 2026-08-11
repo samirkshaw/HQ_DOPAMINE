@@ -5,193 +5,6 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { analyzeDailyTargets } from '../lib/gemini';
 
-const styles = `
-  .hq-profile {
-    min-height: calc(100vh - 64px);
-    box-sizing: border-box;
-    padding: 42px 24px 80px;
-    color: #10241E;
-    font-family: var(--font-body);
-  }
-
-  .hq-profile-container {
-    width: 100%;
-    max-width: 700px;
-    margin: 0 auto;
-  }
-
-  .hq-profile-header {
-    margin-bottom: 28px;
-  }
-
-  .hq-profile-eyebrow {
-    margin-bottom: 8px;
-    color: #1F9E76;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-
-  .hq-profile-title {
-    margin: 0;
-    color: #10241E;
-    font-family: var(--font-display);
-    font-size: 36px;
-    line-height: 1.1;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-  }
-
-  .hq-profile-subtitle {
-    margin: 10px 0 0;
-    color: #5B6B65;
-    font-size: 15px;
-    line-height: 1.6;
-  }
-
-  .hq-profile-card {
-    box-sizing: border-box;
-    width: 100%;
-    padding: 32px;
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.65);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    box-shadow: 0 12px 32px rgba(16, 36, 30, 0.06);
-  }
-
-  .hq-profile-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
-  }
-
-  .hq-profile-field {
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-  }
-
-  .hq-profile-field.full {
-    grid-column: 1 / -1;
-  }
-
-  .hq-profile-label {
-    color: #10241E;
-    font-size: 13px;
-    font-weight: 600;
-  }
-
-  .hq-profile-input,
-  .hq-profile-select,
-  .hq-profile-textarea {
-    box-sizing: border-box;
-    width: 100%;
-    border: 1px solid rgba(16, 36, 30, 0.12);
-    border-radius: 12px;
-    outline: none;
-    background: rgba(255, 255, 255, 0.85);
-    color: #10241E;
-    font-family: inherit;
-    font-size: 14px;
-    padding: 12px 14px;
-  }
-
-  .hq-profile-input:focus,
-  .hq-profile-select:focus,
-  .hq-profile-textarea:focus {
-    border-color: #1F9E76;
-    box-shadow: 0 0 0 3px rgba(31, 158, 118, 0.2);
-  }
-
-  .hq-profile-select option {
-    background: #ffffff;
-    color: #10241E;
-  }
-
-  .hq-profile-textarea {
-    min-height: 100px;
-    resize: vertical;
-  }
-
-  .hq-profile-help {
-    color: #5B6B65;
-    font-size: 12px;
-    line-height: 1.5;
-  }
-
-  .hq-profile-error {
-    box-sizing: border-box;
-    margin-bottom: 18px;
-    padding: 13px;
-    border: 1px solid rgba(239, 68, 68, 0.25);
-    border-radius: 10px;
-    background: rgba(239, 68, 68, 0.1);
-    color: #dc2626;
-    font-size: 13px;
-  }
-
-  .hq-profile-success {
-    box-sizing: border-box;
-    margin-bottom: 18px;
-    padding: 13px;
-    border: 1px solid rgba(31, 158, 118, 0.25);
-    border-radius: 10px;
-    background: rgba(31, 158, 118, 0.1);
-    color: #1F9E76;
-    font-size: 13px;
-  }
-
-  .hq-profile-button {
-    width: 100%;
-    margin-top: 24px;
-    border: none;
-    border-radius: 999px;
-    padding: 14px 20px;
-    background: #1F9E76;
-    color: #ffffff;
-    font-family: inherit;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: 0 4px 14px rgba(31, 158, 118, 0.25);
-    transition: all 0.2s ease;
-  }
-
-  .hq-profile-button:hover {
-    background: #178361;
-  }
-
-  .hq-profile-button:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-  }
-
-  @media (max-width: 600px) {
-    .hq-profile {
-      padding: 28px 14px 60px;
-    }
-
-    .hq-profile-title {
-      font-size: 30px;
-    }
-
-    .hq-profile-card {
-      padding: 20px;
-    }
-
-    .hq-profile-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .hq-profile-field.full {
-      grid-column: auto;
-    }
-  }
-`;
-
 export default function Profile() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -371,234 +184,230 @@ export default function Profile() {
   }
 
   return (
-    <>
-      <style>{styles}</style>
+    <main className="min-h-[calc(100vh-64px)] px-4 py-8 sm:px-6 sm:py-12 text-[#10241E]">
+      <div className="w-full max-w-2xl mx-auto">
 
-      <main className="hq-profile">
-        <div className="hq-profile-container">
+        <header className="mb-7">
+          <div className="text-[#1F9E76] text-xs font-bold tracking-widest uppercase mb-2">
+            HQ DOPAMINE
+          </div>
 
-          <header className="hq-profile-header">
-            <div className="hq-profile-eyebrow">
-              HQ DOPAMINE
+          <h1 className="font-display text-3xl sm:text-4xl font-bold text-[#10241E] tracking-tight leading-tight">
+            Your Profile
+          </h1>
+
+          <p className="mt-2.5 text-[#5B6B65] text-sm sm:text-base leading-relaxed">
+            Tell us a little about yourself so we can
+            calculate more personalized nutrition targets.
+          </p>
+        </header>
+
+        {error && (
+          <div className="mb-5 p-3.5 rounded-xl text-xs sm:text-sm bg-red-500/10 border border-red-500/25 text-red-600">
+            {error}
+          </div>
+        )}
+
+        {success && (
+          <div className="mb-5 p-3.5 rounded-xl text-xs sm:text-sm bg-[#1F9E76]/10 border border-[#1F9E76]/25 text-[#1F9E76] font-medium">
+            {success}
+          </div>
+        )}
+
+        <form
+          className="glass-card p-5 sm:p-8 rounded-2xl"
+          onSubmit={handleSubmit}
+        >
+          {loading ? (
+            <div className="text-[#5B6B65] text-sm text-center py-4">
+              Loading your profile...
             </div>
+          ) : (
+            <div className="flex flex-col gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-            <h1 className="hq-profile-title">
-              Your Profile
-            </h1>
+                <div className="flex flex-col gap-1.5">
+                  <label
+                    className="text-[#10241E] text-xs sm:text-sm font-semibold"
+                    htmlFor="age"
+                  >
+                    Age *
+                  </label>
 
-            <p className="hq-profile-subtitle">
-              Tell us a little about yourself so we can
-              calculate more personalized nutrition targets.
-            </p>
-          </header>
-
-          {error && (
-            <div className="hq-profile-error">
-              {error}
-            </div>
-          )}
-
-          {success && (
-            <div className="hq-profile-success">
-              {success}
-            </div>
-          )}
-
-          <form
-            className="hq-profile-card"
-            onSubmit={handleSubmit}
-          >
-            {loading ? (
-              <div className="hq-profile-help">
-                Loading your profile...
-              </div>
-            ) : (
-              <>
-                <div className="hq-profile-grid">
-
-                  <div className="hq-profile-field">
-                    <label
-                      className="hq-profile-label"
-                      htmlFor="age"
-                    >
-                      Age *
-                    </label>
-
-                    <input
-                      id="age"
-                      name="age"
-                      type="number"
-                      min="1"
-                      max="120"
-                      value={form.age}
-                      onChange={handleChange}
-                      className="hq-profile-input"
-                      placeholder="e.g. 25"
-                      required
-                    />
-                  </div>
-
-                  <div className="hq-profile-field">
-                    <label
-                      className="hq-profile-label"
-                      htmlFor="weight_kg"
-                    >
-                      Weight (kg) *
-                    </label>
-
-                    <input
-                      id="weight_kg"
-                      name="weight_kg"
-                      type="number"
-                      min="1"
-                      step="0.1"
-                      value={form.weight_kg}
-                      onChange={handleChange}
-                      className="hq-profile-input"
-                      placeholder="e.g. 70"
-                      required
-                    />
-                  </div>
-
-                  <div className="hq-profile-field">
-                    <label
-                      className="hq-profile-label"
-                      htmlFor="height_cm"
-                    >
-                      Height (cm) *
-                    </label>
-
-                    <input
-                      id="height_cm"
-                      name="height_cm"
-                      type="number"
-                      min="50"
-                      max="250"
-                      step="0.1"
-                      value={form.height_cm}
-                      onChange={handleChange}
-                      className="hq-profile-input"
-                      placeholder="e.g. 175"
-                      required
-                    />
-                  </div>
-
-                  <div className="hq-profile-field">
-                    <label
-                      className="hq-profile-label"
-                      htmlFor="activity_level"
-                    >
-                      Activity Level *
-                    </label>
-
-                    <select
-                      id="activity_level"
-                      name="activity_level"
-                      value={form.activity_level}
-                      onChange={handleChange}
-                      className="hq-profile-select"
-                      required
-                    >
-                      <option value="">
-                        Select activity level
-                      </option>
-
-                      <option value="sedentary">
-                        Sedentary
-                      </option>
-
-                      <option value="light">
-                        Lightly active
-                      </option>
-
-                      <option value="moderate">
-                        Moderately active
-                      </option>
-
-                      <option value="very_active">
-                        Very active
-                      </option>
-
-                      <option value="extra_active">
-                        Extremely active
-                      </option>
-                    </select>
-                  </div>
-
-                  <div className="hq-profile-field full">
-                    <label
-                      className="hq-profile-label"
-                      htmlFor="goal"
-                    >
-                      Goal *
-                    </label>
-
-                    <select
-                      id="goal"
-                      name="goal"
-                      value={form.goal}
-                      onChange={handleChange}
-                      className="hq-profile-select"
-                      required
-                    >
-                      <option value="">
-                        Select your goal
-                      </option>
-
-                      <option value="lose_weight">
-                        Lose weight
-                      </option>
-
-                      <option value="maintain_weight">
-                        Maintain weight
-                      </option>
-
-                      <option value="gain_weight">
-                        Gain weight
-                      </option>
-                    </select>
-                  </div>
-
-                  <div className="hq-profile-field full">
-                    <label
-                      className="hq-profile-label"
-                      htmlFor="health_conditions"
-                    >
-                      Health conditions
-                    </label>
-
-                    <textarea
-                      id="health_conditions"
-                      name="health_conditions"
-                      value={form.health_conditions}
-                      onChange={handleChange}
-                      className="hq-profile-textarea"
-                      placeholder="Optional. Enter any relevant conditions, or leave blank."
-                    />
-
-                    <div className="hq-profile-help">
-                      This is optional and will be used only as
-                      profile context for nutrition target estimates.
-                    </div>
-                  </div>
-
+                  <input
+                    id="age"
+                    name="age"
+                    type="number"
+                    min="1"
+                    max="120"
+                    value={form.age}
+                    onChange={handleChange}
+                    className="glass-input"
+                    placeholder="e.g. 25"
+                    required
+                  />
                 </div>
 
-                <button
-                  type="submit"
-                  className="hq-profile-button"
-                  disabled={saving}
-                >
-                  {saving
-                    ? 'Saving profile...'
-                    : 'Save Profile'}
-                </button>
-              </>
-            )}
-          </form>
+                <div className="flex flex-col gap-1.5">
+                  <label
+                    className="text-[#10241E] text-xs sm:text-sm font-semibold"
+                    htmlFor="weight_kg"
+                  >
+                    Weight (kg) *
+                  </label>
 
-        </div>
-      </main>
-    </>
+                  <input
+                    id="weight_kg"
+                    name="weight_kg"
+                    type="number"
+                    min="1"
+                    step="0.1"
+                    value={form.weight_kg}
+                    onChange={handleChange}
+                    className="glass-input"
+                    placeholder="e.g. 70"
+                    required
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label
+                    className="text-[#10241E] text-xs sm:text-sm font-semibold"
+                    htmlFor="height_cm"
+                  >
+                    Height (cm) *
+                  </label>
+
+                  <input
+                    id="height_cm"
+                    name="height_cm"
+                    type="number"
+                    min="50"
+                    max="250"
+                    step="0.1"
+                    value={form.height_cm}
+                    onChange={handleChange}
+                    className="glass-input"
+                    placeholder="e.g. 175"
+                    required
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label
+                    className="text-[#10241E] text-xs sm:text-sm font-semibold"
+                    htmlFor="activity_level"
+                  >
+                    Activity Level *
+                  </label>
+
+                  <select
+                    id="activity_level"
+                    name="activity_level"
+                    value={form.activity_level}
+                    onChange={handleChange}
+                    className="glass-input cursor-pointer"
+                    required
+                  >
+                    <option value="">
+                      Select activity level
+                    </option>
+
+                    <option value="sedentary">
+                      Sedentary
+                    </option>
+
+                    <option value="light">
+                      Lightly active
+                    </option>
+
+                    <option value="moderate">
+                      Moderately active
+                    </option>
+
+                    <option value="very_active">
+                      Very active
+                    </option>
+
+                    <option value="extra_active">
+                      Extremely active
+                    </option>
+                  </select>
+                </div>
+
+                <div className="flex flex-col gap-1.5 sm:col-span-2">
+                  <label
+                    className="text-[#10241E] text-xs sm:text-sm font-semibold"
+                    htmlFor="goal"
+                  >
+                    Goal *
+                  </label>
+
+                  <select
+                    id="goal"
+                    name="goal"
+                    value={form.goal}
+                    onChange={handleChange}
+                    className="glass-input cursor-pointer"
+                    required
+                  >
+                    <option value="">
+                      Select your goal
+                    </option>
+
+                    <option value="lose_weight">
+                      Lose weight
+                    </option>
+
+                    <option value="maintain_weight">
+                      Maintain weight
+                    </option>
+
+                    <option value="gain_weight">
+                      Gain weight
+                    </option>
+                  </select>
+                </div>
+
+                <div className="flex flex-col gap-1.5 sm:col-span-2">
+                  <label
+                    className="text-[#10241E] text-xs sm:text-sm font-semibold"
+                    htmlFor="health_conditions"
+                  >
+                    Health conditions
+                  </label>
+
+                  <textarea
+                    id="health_conditions"
+                    name="health_conditions"
+                    value={form.health_conditions}
+                    onChange={handleChange}
+                    className="glass-input min-h-[100px] resize-y"
+                    placeholder="Optional. Enter any relevant conditions, or leave blank."
+                  />
+
+                  <div className="text-[#5B6B65] text-xs mt-1">
+                    This is optional and will be used only as
+                    profile context for nutrition target estimates.
+                  </div>
+                </div>
+
+              </div>
+
+              <button
+                type="submit"
+                className="mt-2 w-full py-3.5 px-6 bg-[#1F9E76] text-white text-base font-semibold rounded-full shadow-md hover:bg-[#178361] transition-all cursor-pointer disabled:opacity-65 disabled:cursor-not-allowed"
+                disabled={saving}
+              >
+                {saving
+                  ? 'Saving profile...'
+                  : 'Save Profile'}
+              </button>
+            </div>
+          )}
+        </form>
+
+      </div>
+    </main>
   );
-}
+}

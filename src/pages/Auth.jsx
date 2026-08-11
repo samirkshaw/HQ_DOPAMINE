@@ -79,54 +79,64 @@ export default function Auth() {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.headerNav}>
-        <Link to="/" style={styles.brandLink}>
-          <span style={styles.brandBadge}>HQ</span>
-          <span style={styles.brandName}>DOPAMINE</span>
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 relative">
+      <div className="w-full max-w-md flex justify-start mb-6 sm:absolute sm:top-6 sm:left-6 sm:mb-0">
+        <Link to="/" className="flex items-center gap-2 text-decoration-none group">
+          <span className="bg-[#1F9E76] text-white text-xs font-extrabold px-2 py-1 rounded-md tracking-wider">HQ</span>
+          <span className="font-display text-xl font-bold text-[#10241E] tracking-tight group-hover:text-[#1F9E76] transition-colors">DOPAMINE</span>
         </Link>
       </div>
 
-      <div className="glass-card" style={styles.card}>
-        <h1 style={styles.title}>
+      <div className="glass-card w-full max-w-md p-6 sm:p-9 rounded-2xl">
+        <h1 className="font-display text-2xl sm:text-3xl font-bold text-center text-[#10241E] mb-1.5">
           {isSignUp ? 'Create your Account' : 'Welcome Back'}
         </h1>
-        <p style={styles.subtitle}>
+        <p className="text-xs sm:text-sm text-center text-[#5B6B65] mb-6 leading-relaxed">
           {isSignUp
             ? 'Start tracking your meals with honest AI insight.'
             : 'Sign in to access your daily targets and meal logs.'}
         </p>
 
         {/* Mode Switch Tabs */}
-        <div style={styles.tabGroup}>
+        <div className="flex bg-[#10241E]/6 p-1 rounded-xl mb-6">
           <button
             type="button"
             onClick={() => toggleMode(false)}
-            style={{
-              ...styles.tabBtn,
-              ...(!isSignUp ? styles.tabBtnActive : {}),
-            }}
+            className={`flex-1 py-2 px-3 text-xs sm:text-sm font-semibold rounded-lg transition-all cursor-pointer ${
+              !isSignUp
+                ? "bg-white text-[#10241E] shadow-xs"
+                : "text-[#5B6B65] hover:text-[#10241E]"
+            }`}
           >
             Sign In
           </button>
           <button
             type="button"
             onClick={() => toggleMode(true)}
-            style={{
-              ...styles.tabBtn,
-              ...(isSignUp ? styles.tabBtnActive : {}),
-            }}
+            className={`flex-1 py-2 px-3 text-xs sm:text-sm font-semibold rounded-lg transition-all cursor-pointer ${
+              isSignUp
+                ? "bg-white text-[#10241E] shadow-xs"
+                : "text-[#5B6B65] hover:text-[#10241E]"
+            }`}
           >
             Sign Up
           </button>
         </div>
 
-        {error && <div style={styles.errorMessage}>{error}</div>}
-        {message && <div style={styles.successMessage}>{message}</div>}
+        {error && (
+          <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/25 text-red-600 text-xs sm:text-sm">
+            {error}
+          </div>
+        )}
+        {message && (
+          <div className="mb-4 p-3 rounded-xl bg-[#1F9E76]/10 border border-[#1F9E76]/25 text-[#1F9E76] text-xs sm:text-sm font-medium">
+            {message}
+          </div>
+        )}
 
-        <form onSubmit={handleSubmit} style={styles.form}>
-          <div style={styles.inputGroup}>
-            <label style={styles.label}>Email Address</label>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs sm:text-sm font-semibold text-[#10241E]">Email Address</label>
             <input
               type="email"
               value={email}
@@ -137,8 +147,8 @@ export default function Auth() {
             />
           </div>
 
-          <div style={styles.inputGroup}>
-            <label style={styles.label}>Password</label>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs sm:text-sm font-semibold text-[#10241E]">Password</label>
             <input
               type="password"
               value={password}
@@ -152,11 +162,7 @@ export default function Auth() {
           <button
             type="submit"
             disabled={isSubmitting}
-            style={{
-              ...styles.button,
-              opacity: isSubmitting ? 0.7 : 1,
-              cursor: isSubmitting ? 'not-allowed' : 'pointer'
-            }}
+            className="mt-1 w-full py-3 px-4 bg-[#1F9E76] text-white text-sm sm:text-base font-semibold rounded-full shadow-md hover:bg-[#178361] transition-all cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
           >
             {isSubmitting
               ? (isSignUp ? 'Creating account...' : 'Signing in...')
@@ -164,14 +170,14 @@ export default function Auth() {
           </button>
         </form>
 
-        <div style={styles.footer}>
-          <p style={styles.footerText}>
+        <div className="mt-6 text-center">
+          <p className="text-xs sm:text-sm text-[#5B6B65]">
             {isSignUp ? 'Already have an account?' : "Don't have an account?"}
             {' '}
             <button
               type="button"
               onClick={() => toggleMode(!isSignUp)}
-              style={styles.toggleButton}
+              className="text-[#1F9E76] font-semibold underline cursor-pointer hover:text-[#178361]"
             >
               {isSignUp ? 'Sign In' : 'Sign Up free'}
             </button>
@@ -181,149 +187,3 @@ export default function Auth() {
     </div>
   );
 }
-
-const styles = {
-  container: {
-    minHeight: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '24px',
-    position: 'relative',
-  },
-  headerNav: {
-    position: 'absolute',
-    top: '24px',
-    left: '24px',
-  },
-  brandLink: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    textDecoration: 'none',
-  },
-  brandBadge: {
-    backgroundColor: '#1F9E76',
-    color: '#ffffff',
-    fontWeight: '800',
-    fontSize: '12px',
-    padding: '3px 7px',
-    borderRadius: '6px',
-  },
-  brandName: {
-    fontFamily: "var(--font-display)",
-    fontSize: '19px',
-    fontWeight: '700',
-    color: '#10241E',
-  },
-  card: {
-    width: '100%',
-    maxWidth: '420px',
-    padding: '36px 28px',
-    border: '1px solid rgba(255, 255, 255, 0.9)',
-  },
-  title: {
-    margin: '0 0 6px 0',
-    fontFamily: "var(--font-display)",
-    fontSize: '28px',
-    fontWeight: '700',
-    textAlign: 'center',
-    color: '#10241E',
-  },
-  subtitle: {
-    margin: '0 0 24px 0',
-    fontSize: '14px',
-    textAlign: 'center',
-    color: '#5B6B65',
-    lineHeight: '1.5',
-  },
-  tabGroup: {
-    display: 'flex',
-    backgroundColor: 'rgba(16, 36, 30, 0.06)',
-    padding: '4px',
-    borderRadius: '12px',
-    marginBottom: '24px',
-  },
-  tabBtn: {
-    flex: 1,
-    padding: '8px 12px',
-    border: 'none',
-    borderRadius: '8px',
-    backgroundColor: 'transparent',
-    color: '#5B6B65',
-    fontSize: '14px',
-    fontWeight: '600',
-    cursor: 'pointer',
-    transition: 'all 0.2s',
-  },
-  tabBtnActive: {
-    backgroundColor: '#ffffff',
-    color: '#10241E',
-    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.06)',
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '18px',
-  },
-  inputGroup: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '6px',
-  },
-  label: {
-    fontSize: '13px',
-    fontWeight: '600',
-    color: '#10241E',
-  },
-  button: {
-    marginTop: '6px',
-    padding: '14px',
-    borderRadius: '999px',
-    border: 'none',
-    backgroundColor: '#1F9E76',
-    color: '#ffffff',
-    fontSize: '15px',
-    fontWeight: '600',
-    boxShadow: '0 4px 14px rgba(31, 158, 118, 0.25)',
-    transition: 'all 0.2s ease',
-  },
-  errorMessage: {
-    padding: '12px',
-    marginBottom: '16px',
-    borderRadius: '10px',
-    backgroundColor: 'rgba(239, 68, 68, 0.1)',
-    border: '1px solid rgba(239, 68, 68, 0.25)',
-    color: '#dc2626',
-    fontSize: '13px',
-  },
-  successMessage: {
-    padding: '12px',
-    marginBottom: '16px',
-    borderRadius: '10px',
-    backgroundColor: 'rgba(31, 158, 118, 0.1)',
-    border: '1px solid rgba(31, 158, 118, 0.25)',
-    color: '#1F9E76',
-    fontSize: '13px',
-  },
-  footer: {
-    marginTop: '24px',
-    textAlign: 'center',
-  },
-  footerText: {
-    margin: 0,
-    fontSize: '14px',
-    color: '#5B6B65',
-  },
-  toggleButton: {
-    background: 'none',
-    border: 'none',
-    color: '#1F9E76',
-    fontWeight: '600',
-    cursor: 'pointer',
-    padding: '0 4px',
-    fontSize: '14px',
-    textDecoration: 'underline',
-  },
-};

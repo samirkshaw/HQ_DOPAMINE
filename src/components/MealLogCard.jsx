@@ -31,31 +31,35 @@ export default function MealLogCard({ items, dateLabel }) {
     : items[0].log_date);
 
   return (
-    <div style={styles.card}>
+    <div className="glass-card p-4 sm:p-5 rounded-2xl transition-all">
       {/* Collapsed Header Bar */}
       <div
-        style={styles.headerRow}
+        className="flex items-center justify-between gap-3 cursor-pointer select-none"
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <div style={styles.headerLeft}>
-          <div style={styles.titleRow}>
-            <span style={styles.mealIcon}>🍽</span>
-            <h3 style={styles.mealTitle}>{mealTitle}</h3>
+        <div className="flex flex-col gap-1 min-w-0 flex-1">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-base">🍽</span>
+            <h3 className="text-sm sm:text-base font-bold text-[#10241E] truncate max-w-[200px] sm:max-w-xs">
+              {mealTitle}
+            </h3>
             {items.length > 1 && (
-              <span style={styles.itemCountBadge}>{items.length} items</span>
+              <span className="text-[11px] font-semibold text-[#1F9E76] bg-[#1F9E76]/12 px-2 py-0.5 rounded-full whitespace-nowrap">
+                {items.length} items
+              </span>
             )}
           </div>
-          <div style={styles.timeLabel}>{displayTime}</div>
+          <div className="text-xs text-[#5B6B65]">{displayTime}</div>
         </div>
 
-        <div style={styles.headerRight}>
-          <div style={styles.caloriesPill}>
-            {totalCalories} <span style={{ fontSize: '11px' }}>kcal</span>
+        <div className="flex items-center gap-2.5 shrink-0">
+          <div className="font-mono text-sm sm:text-base font-bold text-[#FF8F6B] bg-[#FF8F6B]/12 px-2.5 sm:px-3 py-1 rounded-full whitespace-nowrap">
+            {totalCalories} <span className="text-[11px] font-normal">kcal</span>
           </div>
 
           <button
             type="button"
-            style={styles.toggleBtn}
+            className="w-7 h-7 rounded-full bg-[#10241E]/6 text-[#10241E] flex items-center justify-center text-xs font-bold hover:bg-[#10241E]/10 transition-colors cursor-pointer"
             aria-label={isExpanded ? "Collapse meal" : "Expand meal"}
           >
             {isExpanded ? '▴' : '▾'}
@@ -64,33 +68,42 @@ export default function MealLogCard({ items, dateLabel }) {
       </div>
 
       {/* Macro Summary Strip */}
-      <div style={styles.macroSummaryStrip}>
-        <span style={styles.macroTag}>
-          <strong>{totalProtein}g</strong> Protein
+      <div className="flex flex-wrap gap-2 mt-3 text-xs text-[#5B6B65]">
+        <span className="bg-[#10241E]/4 px-2.5 py-1 rounded-lg">
+          <strong className="text-[#10241E] font-semibold">{totalProtein}g</strong> Protein
         </span>
-        <span style={styles.macroTag}>
-          <strong>{totalCarbs}g</strong> Carbs
+        <span className="bg-[#10241E]/4 px-2.5 py-1 rounded-lg">
+          <strong className="text-[#10241E] font-semibold">{totalCarbs}g</strong> Carbs
         </span>
-        <span style={styles.macroTag}>
-          <strong>{totalFat}g</strong> Fat
+        <span className="bg-[#10241E]/4 px-2.5 py-1 rounded-lg">
+          <strong className="text-[#10241E] font-semibold">{totalFat}g</strong> Fat
         </span>
       </div>
 
       {/* Expanded Item Breakdown */}
       {isExpanded && (
-        <div style={styles.expandedSection}>
-          <div style={styles.divider} />
-          <div style={styles.itemListTitle}>Itemized Breakdown</div>
-          <div style={styles.itemList}>
+        <div className="mt-3">
+          <div className="h-px bg-[#10241E]/8 my-3" />
+          <div className="text-[11px] font-bold text-[#1F9E76] uppercase tracking-wider mb-2">
+            Itemized Breakdown
+          </div>
+          <div className="flex flex-col gap-2">
             {items.map((item, idx) => (
-              <div key={item.id || `${item.food_name}-${idx}`} style={styles.itemRow}>
-                <div style={styles.itemNameGroup}>
-                  <span style={styles.itemDot}>•</span>
-                  <span style={styles.itemName}>{item.food_name}</span>
+              <div
+                key={item.id || `${item.food_name}-${idx}`}
+                className="flex items-center justify-between gap-2 p-2 sm:p-2.5 rounded-lg bg-white/75"
+              >
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <span className="text-[#1F9E76] text-xs">•</span>
+                  <span className="text-xs sm:text-sm font-semibold text-[#10241E] truncate">
+                    {item.food_name}
+                  </span>
                 </div>
-                <div style={styles.itemNutrients}>
-                  <span style={styles.itemCal}>{Math.round(item.calories || 0)} kcal</span>
-                  <span style={styles.itemProt}>
+                <div className="flex items-center gap-2.5 text-xs font-mono shrink-0">
+                  <span className="text-[#FF8F6B] font-semibold">
+                    {Math.round(item.calories || 0)} kcal
+                  </span>
+                  <span className="text-[#5B6B65]">
                     {Math.round(item.protein || 0)}g P
                   </span>
                 </div>
@@ -103,151 +116,3 @@ export default function MealLogCard({ items, dateLabel }) {
   );
 }
 
-const styles = {
-  card: {
-    padding: '18px 20px',
-    borderRadius: '16px',
-    border: '1px solid rgba(255, 255, 255, 0.9)',
-    backgroundColor: 'rgba(255, 255, 255, 0.65)',
-    backdropFilter: 'blur(16px)',
-    WebkitBackdropFilter: 'blur(16px)',
-    boxShadow: '0 4px 16px rgba(16, 36, 30, 0.04)',
-    transition: 'all 0.2s ease',
-  },
-  headerRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    cursor: 'pointer',
-    userSelect: 'none',
-  },
-  headerLeft: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '4px',
-  },
-  titleRow: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    flexWrap: 'wrap',
-  },
-  mealIcon: {
-    fontSize: '16px',
-  },
-  mealTitle: {
-    margin: 0,
-    fontSize: '16px',
-    fontWeight: '700',
-    color: '#10241E',
-    fontFamily: 'var(--font-body)',
-  },
-  itemCountBadge: {
-    fontSize: '11px',
-    fontWeight: '600',
-    color: '#1F9E76',
-    backgroundColor: 'rgba(31, 158, 118, 0.12)',
-    padding: '2px 8px',
-    borderRadius: '999px',
-  },
-  timeLabel: {
-    fontSize: '12px',
-    color: '#5B6B65',
-  },
-  headerRight: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-  },
-  caloriesPill: {
-    fontFamily: 'var(--font-mono)',
-    fontSize: '16px',
-    fontWeight: '700',
-    color: '#FF8F6B',
-    backgroundColor: 'rgba(255, 143, 107, 0.12)',
-    padding: '4px 12px',
-    borderRadius: '999px',
-    whiteSpace: 'nowrap',
-  },
-  toggleBtn: {
-    border: 'none',
-    background: 'rgba(16, 36, 30, 0.06)',
-    color: '#10241E',
-    width: '28px',
-    height: '28px',
-    borderRadius: '50%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '14px',
-    fontWeight: 'bold',
-    cursor: 'pointer',
-  },
-  macroSummaryStrip: {
-    display: 'flex',
-    gap: '12px',
-    marginTop: '12px',
-    fontSize: '12px',
-    color: '#5B6B65',
-  },
-  macroTag: {
-    backgroundColor: 'rgba(16, 36, 30, 0.04)',
-    padding: '4px 10px',
-    borderRadius: '8px',
-  },
-  expandedSection: {
-    marginTop: '12px',
-  },
-  divider: {
-    height: '1px',
-    backgroundColor: 'rgba(16, 36, 30, 0.08)',
-    margin: '12px 0',
-  },
-  itemListTitle: {
-    fontSize: '11px',
-    fontWeight: '700',
-    color: '#1F9E76',
-    textTransform: 'uppercase',
-    letterSpacing: '0.8px',
-    marginBottom: '8px',
-  },
-  itemList: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
-  },
-  itemRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '6px 10px',
-    borderRadius: '8px',
-    backgroundColor: 'rgba(255, 255, 255, 0.75)',
-  },
-  itemNameGroup: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-  },
-  itemDot: {
-    color: '#1F9E76',
-  },
-  itemName: {
-    fontSize: '14px',
-    fontWeight: '600',
-    color: '#10241E',
-  },
-  itemNutrients: {
-    display: 'flex',
-    gap: '10px',
-    fontSize: '12px',
-    fontFamily: 'var(--font-mono)',
-  },
-  itemCal: {
-    color: '#FF8F6B',
-    fontWeight: '600',
-  },
-  itemProt: {
-    color: '#5B6B65',
-  },
-};
