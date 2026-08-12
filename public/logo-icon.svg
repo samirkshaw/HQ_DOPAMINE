@@ -1,0 +1,10 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img">
+<title>HonestBite AI icon</title>
+<desc>A circular emerald scan ring with a diagonal scan line and coral accent dot, on a soft mint background.</desc>
+<circle cx="256" cy="256" r="256" fill="#D9F2E6"/>
+<circle cx="256" cy="256" r="150" fill="none" stroke="#1F9E76" stroke-width="14"/>
+<circle cx="256" cy="256" r="150" fill="none" stroke="#1F9E76" stroke-width="14" stroke-dasharray="60 400" stroke-dashoffset="-330" stroke-linecap="round" opacity="0.35"/>
+<line x1="150" y1="150" x2="362" y2="362" stroke="#10241E" stroke-width="10" stroke-linecap="round"/>
+<circle cx="150" cy="150" r="20" fill="#10241E"/>
+<circle cx="362" cy="362" r="16" fill="#FF8F6B"/>
+</svg>

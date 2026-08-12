@@ -728,7 +728,7 @@ export default function Log() {
           <header className="hq-log-header">
 
             <div className="hq-log-eyebrow">
-              HQ DOPAMINE
+              HONESTBITE AI
             </div>
 
             <h1 className="hq-log-title">

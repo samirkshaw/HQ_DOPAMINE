@@ -623,7 +623,7 @@ export default function Dashboard() {
 
         <header className="mb-7">
           <div className="text-[#1F9E76] text-xs font-bold tracking-widest uppercase mb-2">
-            HQ DOPAMINE
+            HONESTBITE AI
           </div>
 
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-[#10241E] tracking-tight leading-tight">

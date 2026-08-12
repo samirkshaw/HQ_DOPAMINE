@@ -1,0 +1,12 @@
+<svg width="460" height="120" viewBox="0 0 460 120" xmlns="http://www.w3.org/2000/svg" role="img">
+<title>HonestBite AI logo</title>
+<desc>Emerald scan-ring icon beside the HonestBite AI wordmark in a display serif, on a transparent background.</desc>
+<circle cx="60" cy="60" r="60" fill="#D9F2E6"/>
+<circle cx="60" cy="60" r="35" fill="none" stroke="#1F9E76" stroke-width="6"/>
+<circle cx="60" cy="60" r="35" fill="none" stroke="#1F9E76" stroke-width="6" stroke-dasharray="14 94" stroke-dashoffset="-77" stroke-linecap="round" opacity="0.35"/>
+<line x1="35" y1="35" x2="85" y2="85" stroke="#10241E" stroke-width="5" stroke-linecap="round"/>
+<circle cx="35" cy="35" r="9" fill="#10241E"/>
+<circle cx="85" cy="85" r="7" fill="#FF8F6B"/>
+<text x="140" y="55" font-family="'Fraunces', Georgia, serif" font-size="32" font-weight="600" fill="#10241E">HonestBite AI</text>
+<text x="140" y="82" font-family="'Inter', sans-serif" font-size="14" letter-spacing="3" fill="#5B6B65">NUTRITION, HONESTLY TRACKED</text>
+</svg>

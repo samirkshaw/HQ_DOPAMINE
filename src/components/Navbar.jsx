@@ -27,18 +27,18 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 bg-white/75 backdrop-blur-md border-b border-white/80 shadow-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         
-        {/* Brand Logo */}
+        {/* Brand Logo & Home Link */}
         <Link 
           to="/dashboard" 
-          className="flex items-center gap-2 text-decoration-none group"
+          className="flex items-center text-decoration-none group"
           onClick={() => setMobileMenuOpen(false)}
+          title="HonestBite AI Home"
         >
-          <span className="bg-[#1F9E76] text-white text-xs font-extrabold px-2 py-1 rounded-md tracking-wider">
-            HQ
-          </span>
-          <span className="font-display text-xl font-bold text-[#10241E] tracking-tight group-hover:text-[#1F9E76] transition-colors">
-            DOPAMINE
-          </span>
+          <img 
+            src="/logo-full.svg" 
+            alt="HonestBite AI" 
+            className="h-8 sm:h-9 w-auto object-contain group-hover:scale-[1.02] transition-transform duration-200" 
+          />
         </Link>
 
         {/* Desktop Navigation Links */}

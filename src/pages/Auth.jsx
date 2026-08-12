@@ -81,9 +81,12 @@ export default function Auth() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 relative">
       <div className="w-full max-w-md flex justify-start mb-6 sm:absolute sm:top-6 sm:left-6 sm:mb-0">
-        <Link to="/" className="flex items-center gap-2 text-decoration-none group">
-          <span className="bg-[#1F9E76] text-white text-xs font-extrabold px-2 py-1 rounded-md tracking-wider">HQ</span>
-          <span className="font-display text-xl font-bold text-[#10241E] tracking-tight group-hover:text-[#1F9E76] transition-colors">DOPAMINE</span>
+        <Link to="/" className="flex items-center text-decoration-none group" title="HonestBite AI Home">
+          <img 
+            src="/logo-full.svg" 
+            alt="HonestBite AI" 
+            className="h-8 sm:h-9 w-auto object-contain group-hover:scale-[1.02] transition-transform duration-200" 
+          />
         </Link>
       </div>
 

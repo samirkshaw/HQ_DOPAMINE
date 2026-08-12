@@ -45,6 +45,7 @@ export default function UploadPhoto({ onFoodAnalyzed }) {
 
     try {
       const result = await analyzeFood(imageFile);
+      console.log("RAW GEMINI RESULT:", JSON.stringify(result, null, 2));
 
       if (!result?.items || result.items.length === 0) {
         setError(

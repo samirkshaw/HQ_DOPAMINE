@@ -44,7 +44,7 @@ function RootIndex() {
           fontSize: '15px',
         }}
       >
-        Initializing HQ Dopamine...
+        Initializing HonestBite AI...
       </div>
     );
   }

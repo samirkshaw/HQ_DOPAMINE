@@ -211,27 +211,35 @@ must become four separate items.
 
 4. Estimate the portion size from the image.
 
-5. If the portion cannot be estimated confidently:
-   "needsClarification": true
+5. Portion clarification is REQUIRED (needsClarification: true) whenever:
+   - No size reference (hand, plate edge, standard utensil, packaging) is visible in the photo, AND
+   - The food is served in a bowl, curry, gravy, or loose/stackable form where portion size
+     cannot be determined from shape alone (rice, curry, dal, sabzi, raita, drinks).
 
-   Ask exactly ONE specific question.
+   Do NOT mark needsClarification: false just because you CAN produce a plausible number.
+   A confident-sounding guess is not the same as a visually verifiable portion.
 
-6. If the portion is reasonably clear:
-   "needsClarification": false
-   "question": null
+6. needsClarification: false is allowed ONLY for items with a fixed, countable, or
+   standardized unit visible in the photo (e.g. "2 rotis", "1 boiled egg", "3 gulab jamun pieces")
+   where the count itself is visually unambiguous, even if the exact weight is estimated.
 
-7. Nutrient values must always be numbers.
+7. For a plate with 5+ distinct items, you MUST flag at least one item for clarification
+   unless every single item meets the countable-unit exception above. A full thali photo
+   with zero clarification questions is only acceptable if every item is a discrete,
+   countable food.
 
-8. Never use null for nutrient values.
+8. Nutrient values must always be numbers.
 
-9. If a nutrient cannot be known exactly, provide a reasonable
+9. Never use null for nutrient values.
+
+10. If a nutrient cannot be known exactly, provide a reasonable
    estimate based on the visible food and estimated portion.
 
-10. Calories and nutrients must correspond to the estimated portion.
+11. Calories and nutrients must correspond to the estimated portion.
 
-11. Do not create duplicate food items.
+12. Do not create duplicate food items.
 
-12. Do not add foods that are not visible.
+13. Do not add foods that are not visible.
 `;
 
 /* =========================================================

@@ -19,13 +19,12 @@ export default function Landing() {
       <header className="sticky top-0 z-50 bg-[#F5F8F6]/80 backdrop-blur-md border-b border-white/70">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           {/* Logo Left */}
-          <Link to="/" className="flex items-center gap-2 text-decoration-none group">
-            <span className="bg-[#1F9E76] text-white text-xs font-extrabold px-2 py-1 rounded-md tracking-wider">
-              HQ
-            </span>
-            <span className="font-display text-xl font-bold text-[#10241E] tracking-tight group-hover:text-[#1F9E76] transition-colors">
-              DOPAMINE
-            </span>
+          <Link to="/" className="flex items-center text-decoration-none group" title="HonestBite AI Home">
+            <img 
+              src="/logo-full.svg" 
+              alt="HonestBite AI" 
+              className="h-8 sm:h-9 w-auto object-contain group-hover:scale-[1.02] transition-transform duration-200" 
+            />
           </Link>
 
           {/* Center Nav Links (Desktop) */}
@@ -189,7 +188,7 @@ export default function Landing() {
             Built for real-world eating.
           </h2>
           <p className="text-[#5B6B65] text-sm sm:text-base leading-relaxed">
-            Standard macro trackers force you into tedious database searches. HQ Dopamine combines instant computer vision with honest human-in-the-loop verification.
+            Standard macro trackers force you into tedious database searches. HonestBite AI combines instant computer vision with honest human-in-the-loop verification.
           </p>
         </div>
 
@@ -217,7 +216,7 @@ export default function Landing() {
             </div>
             <h3 className="font-display text-xl font-bold text-[#10241E]">Honest about uncertainty</h3>
             <p className="text-xs sm:text-sm text-[#5B6B65] leading-relaxed">
-              Instead of giving you a confident hallucination for hidden oils or portion sizes, HQ Dopamine asks short, targeted clarifying questions when it's unsure.
+              Instead of giving you a confident hallucination for hidden oils or portion sizes, HonestBite AI asks short, targeted clarifying questions when it's unsure.
             </p>
           </div>
 
@@ -261,12 +260,15 @@ export default function Landing() {
       ========================================================= */}
       <footer className="border-t border-[#10241E]/8 py-8 px-4 sm:px-8">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="bg-[#1F9E76] text-white text-xs font-extrabold px-2 py-1 rounded-md tracking-wider">HQ</span>
-            <span className="font-display text-lg font-bold text-[#10241E] tracking-tight">DOPAMINE</span>
+          <div className="flex items-center">
+            <img 
+              src="/logo-full.svg" 
+              alt="HonestBite AI" 
+              className="h-7 w-auto object-contain opacity-90" 
+            />
           </div>
           <p className="text-xs sm:text-sm text-[#5B6B65]">
-            © {new Date().getFullYear()} HQ Dopamine. Intelligent, honest nutrition tracking.
+            © {new Date().getFullYear()} HonestBite AI. Intelligent, honest nutrition tracking.
           </p>
         </div>
       </footer>
