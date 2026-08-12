@@ -55,7 +55,7 @@ export default function Auth() {
         if (signUpError) throw signUpError;
 
         if (data?.user && !data?.session) {
-          setMessage('Account created! Please check your email for confirmation if required.');
+          setMessage('Account created! Check your email and click the confirmation link to activate your account.');
         } else {
           setMessage('Account created successfully!');
           navigate('/');

@@ -215,6 +215,7 @@ must become four separate items.
    - No size reference (hand, plate edge, standard utensil, packaging) is visible in the photo, AND
    - The food is served in a bowl, curry, gravy, or loose/stackable form where portion size
      cannot be determined from shape alone (rice, curry, dal, sabzi, raita, drinks).
+   -Can ask the number of items preseent if not  sure and if it determines the nutrition content."
 
    Do NOT mark needsClarification: false just because you CAN produce a plausible number.
    A confident-sounding guess is not the same as a visually verifiable portion.

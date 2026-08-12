@@ -19,7 +19,8 @@ import Log from './pages/Log';
 import History from './pages/History';
 
 import Dashboard from './components/Dashboard';
-
+import { supabase } from './lib/supabase';
+import { useEffect, useState } from 'react';
 /*
 =========================================================
 ROOT INDEX ROUTE
@@ -29,8 +30,38 @@ Authenticated -> Redirect to /dashboard
 */
 function RootIndex() {
   const { user, loading } = useAuth();
+  const [checkingProfile, setCheckingProfile] = useState(true);
+  const [hasProfile, setHasProfile] = useState(false);
 
-  if (loading) {
+  useEffect(() => {
+    if (!user) {
+      setCheckingProfile(false);
+      return;
+    }
+
+    let mounted = true;
+
+    async function checkProfile() {
+      const { data } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (mounted) {
+        setHasProfile(!!data);
+        setCheckingProfile(false);
+      }
+    }
+
+    checkProfile();
+
+    return () => {
+      mounted = false;
+    };
+  }, [user]);
+
+  if (loading || (user && checkingProfile)) {
     return (
       <div
         style={{
@@ -44,7 +75,7 @@ function RootIndex() {
           fontSize: '15px',
         }}
       >
-        Initializing HonestBite AI...
+        Initializing HQ Dopamine...
       </div>
     );
   }
@@ -53,7 +84,7 @@ function RootIndex() {
     return <Landing />;
   }
 
-  return <Navigate to="/dashboard" replace />;
+  return <Navigate to={hasProfile ? '/dashboard' : '/profile'} replace />;
 }
 
 /*
