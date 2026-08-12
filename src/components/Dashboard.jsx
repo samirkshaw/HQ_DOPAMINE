@@ -7,14 +7,7 @@ import {
 } from "../lib/gemini";
 import MealLogCard from "./MealLogCard";
 
-function getLocalDateStr(offsetDays = 0) {
-  const now = new Date();
-  now.setDate(now.getDate() - offsetDays);
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
+import { getLocalDateStr, groupFoodsByMeal } from "../lib/foodLogUtils";
 
 function formatDateLabel(dateStr) {
   const today = getLocalDateStr(0);
@@ -33,26 +26,6 @@ function formatDateLabel(dateStr) {
     return `Yesterday (${monthName} ${dayNum})`;
   }
   return `${dayOfWeek}, ${monthName} ${dayNum}`;
-}
-
-function groupFoodsByMeal(foodList) {
-  if (!Array.isArray(foodList) || foodList.length === 0) return [];
-  const map = new Map();
-  for (const item of foodList) {
-    let key = item.meal_group_id;
-    if (!key && item.created_at) {
-      key = `batch-${String(item.created_at).slice(0, 16)}`;
-    }
-    if (!key) {
-      key = `single-${item.id || Math.random()}`;
-    }
-
-    if (!map.has(key)) {
-      map.set(key, []);
-    }
-    map.get(key).push(item);
-  }
-  return Array.from(map.values());
 }
 
 

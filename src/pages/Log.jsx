@@ -3,6 +3,7 @@ import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthContext";
 import UploadPhoto from "../components/UploadPhoto";
 import MealLogCard from "../components/MealLogCard";
+import { getLocalDateStr, groupFoodsByMeal } from "../lib/foodLogUtils";
 
 const styles = `
   .hq-log-page {
@@ -335,15 +336,7 @@ const styles = `
   because ISO strings use UTC and can sometimes produce the
   previous/next calendar date depending on timezone.
 */
-function getLocalDate() {
-  const now = new Date();
 
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
-}
 
 function getNumber(value) {
   const number = Number(value);
@@ -471,12 +464,12 @@ export default function Log() {
   async function saveFoods(items, isAI = true) {
     if (!user) {
       setError("You must be logged in.");
-      return;
+      return false;
     }
 
     if (!Array.isArray(items) || items.length === 0) {
       setError("No food data was returned.");
-      return;
+      return false;
     }
 
     setError("");
@@ -500,7 +493,7 @@ export default function Log() {
 
         fat: getNumber(item?.fat_g),
 
-        log_date: getLocalDate(),
+        log_date: getLocalDateStr(),
 
         is_ai_generated: isAI,
 
@@ -516,7 +509,7 @@ export default function Log() {
 
       if (invalidName) {
         setError("One of the food items has no name.");
-        return;
+        return false;
       }
 
       const { error: insertError } = await supabase
@@ -533,7 +526,7 @@ export default function Log() {
           `Error saving food: ${insertError.message}`
         );
 
-        return;
+        return false;
       }
 
       setSuccess(
@@ -554,6 +547,8 @@ export default function Log() {
       setTimeout(() => {
         setSuccess("");
       }, 3500);
+
+      return true;
     } catch (err) {
       console.error(
         "Unexpected AI food save error:",
@@ -563,6 +558,7 @@ export default function Log() {
       setError(
         "Something went wrong while saving the food."
       );
+      return false;
     } finally {
       setLoading(false);
     }
@@ -572,7 +568,7 @@ export default function Log() {
     Called by UploadPhoto after AI analysis.
   */
   async function handleAIResults(items) {
-    await saveFoods(items, true);
+    return await saveFoods(items, true);
   }
 
   /*
@@ -650,7 +646,7 @@ export default function Log() {
 
         fat: fatValue,
 
-        log_date: getLocalDate(),
+        log_date: getLocalDateStr(),
 
         is_ai_generated: false,
 
@@ -977,31 +973,12 @@ export default function Log() {
 
             ) : (
               <div className="hq-food-list" style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                {(() => {
-                  const map = new Map();
-                  for (const item of foods) {
-                    let key = item.meal_group_id;
-                    if (!key && item.created_at) {
-                      key = `batch-${String(item.created_at).slice(0, 16)}`;
-                    }
-                    if (!key) {
-                      key = `single-${item.id || Math.random()}`;
-                    }
-
-                    if (!map.has(key)) {
-                      map.set(key, []);
-                    }
-                    map.get(key).push(item);
-                  }
-                  const groupedMeals = Array.from(map.values());
-
-                  return groupedMeals.map((mealItems, idx) => (
-                    <MealLogCard
-                      key={mealItems[0].meal_group_id || mealItems[0].id || idx}
-                      items={mealItems}
-                    />
-                  ));
-                })()}
+                {groupFoodsByMeal(foods).map((mealItems, idx) => (
+                  <MealLogCard
+                    key={mealItems[0].meal_group_id || mealItems[0].id || idx}
+                    items={mealItems}
+                  />
+                ))}
               </div>
             )}
 

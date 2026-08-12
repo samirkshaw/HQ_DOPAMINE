@@ -10,6 +10,7 @@ export default function UploadPhoto({ onFoodAnalyzed }) {
   const [items, setItems] = useState([]);
 
   const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
   function handleFileChange(event) {
@@ -64,21 +65,33 @@ export default function UploadPhoto({ onFoodAnalyzed }) {
     }
   }
 
-  function handleComplete(finalItems) {
+  async function handleComplete(finalItems) {
     setItems(finalItems);
 
     if (onFoodAnalyzed) {
-      onFoodAnalyzed(finalItems);
+      setSaving(true);
+      const success = await onFoodAnalyzed(finalItems);
+      setSaving(false);
+
+      if (success) {
+        handleReset();
+      }
     }
   }
 
-  function handleUseResults() {
-    if (!items.length) {
+  async function handleUseResults() {
+    if (!items.length || saving) {
       return;
     }
 
     if (onFoodAnalyzed) {
-      onFoodAnalyzed(items);
+      setSaving(true);
+      const success = await onFoodAnalyzed(items);
+      setSaving(false);
+
+      if (success) {
+        handleReset();
+      }
     }
   }
 
@@ -277,9 +290,10 @@ export default function UploadPhoto({ onFoodAnalyzed }) {
             <button
               type="button"
               onClick={handleUseResults}
+              disabled={saving}
               className="ai-save-results"
             >
-              Save these nutrition values
+              {saving ? "Saving..." : "Save these nutrition values"}
             </button>
           )}
 

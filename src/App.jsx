@@ -17,7 +17,6 @@ import Auth from './pages/Auth';
 import Profile from './pages/Profile';
 import Log from './pages/Log';
 import History from './pages/History';
-import TestPipeline from './pages/TestPipeline';
 
 import Dashboard from './components/Dashboard';
 
@@ -109,9 +108,6 @@ export default function App() {
 
               {/* Profile editing form */}
               <Route path="/profile" element={<Profile />} />
-
-              {/* Gemini Pipeline Test (Development route) */}
-              <Route path="/test" element={<TestPipeline />} />
             </Route>
           </Route>
 
